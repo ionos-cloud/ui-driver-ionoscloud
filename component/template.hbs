@@ -1,0 +1,59 @@
+<section class="horizontal-form">
+  {{#accordion-list showExpandAll=false as | al expandFn |}}
+    {{!-- This line shows the driver title which you don't have to change it --}}
+    <div class="over-hr mb-20"><span>{{driverOptionsTitle}}</span></div>
+
+    {{!-- An example input option --}}
+    <div class="row box mt-20">
+      <h4>Instance Options</h4>
+      <div class="row">
+        <div class="col span-2 col-inline">
+          <label>CPUs</label>
+        </div>
+
+        <div class="col span-1">
+          {{config.cpuCount}}
+        </div>
+        <div class="col span-3">
+          {{input-slider value=config.cpuCount valueMin=1 valueMax=32}}
+        </div>
+
+        <div class="col span-2 col-inline">
+          <label>Memory Size</label>
+        </div>
+        <div class="col span-4">
+          <div class="input-group">
+            {{input-integer min=1 value=config.memorySize classNames="form-control"}}
+            <div class="input-group-addon bg-default">MB</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    {{!-- This following contains the Name, Labels and Engine Options fields --}}
+    <div class="over-hr"><span>{{templateOptionsTitle}}</span></div>
+
+    {{form-name-description
+      model=model
+      nameRequired=true
+    }}
+
+    {{form-user-labels
+      initialLabels=labelResource.labels
+      setLabels=(action 'setLabels')
+      expandAll=expandAll
+      expand=(action expandFn)
+    }}
+
+    {{form-engine-opts
+      machine=model
+      showEngineUrl=showEngineUrl
+    }}
+  {{/accordion-list}}
+
+  {{!-- This component shows errors produced by validate() in the component --}}
+  {{top-errors errors=errors}}
+
+  {{!-- This component shows the Create and Cancel buttons --}}
+  {{save-cancel save="save" cancel="cancel"}}
+</section>
