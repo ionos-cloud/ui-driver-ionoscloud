@@ -1,4 +1,4 @@
-# ui-driver-skel
+# IONOS Rancher UI Driver
 Skeleton Rancher UI driver for custom docker-machine drivers
 
 **Note: The Master branch works with Rancher 2.x+, if you are building a custom driver for Rancher 1.x use the 1.x branch**
@@ -30,9 +30,9 @@ For other users to see your driver, you need to build it and host the output on 
 
 ## Using
 
-* Add a Machine Driver in Rancher 2.0 (Global -> Node Drivers)
+* Add a Machine Driver in Rancher 2.0+ (Global -> Node Drivers)
   * Name: Your `DRIVERNAME` (see above).
-  * Download URL: The URL for the driver binary (e.g. `https://github.com/mycompany/docker-machine-mycompany/releases/download/v1.0.0/docker-machine-driver-mycompany-v1.0.0-linux-amd64.tar.gz`)
-  * Custom UI URL: The URL you uploaded the `dist` folder to, e.g. `https://github.com/mycompany/ui-driver-mycompany/releases/download/v1.0.0/component.js`)
+  * Download URL: The URL for the driver binary (e.g. `https://github.com/ionos-cloud/docker-machine-driver/releases/download/v6.1.0/docker-machine-driver-6.1.0-linux-amd64.tar.gz
+  * Custom UI URL: The URL you uploaded the `dist` folder to, e.g. `https://github.com/ionos-cloud/ui-driver-ionoscloud/releases/download/v1.0.0/component.js`)
 * Wait for the driver to become "Active"
 * Go to Clusters -> Add Cluster, your driver and custom UI should show up.
