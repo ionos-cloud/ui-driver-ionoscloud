@@ -80,4 +80,39 @@ export default Ember.Component.extend(NodeDriver, {
   },
 
   // Any computed properties or custom logic can go here
+  locationOptions: [
+    {
+      name: 'Frankfurt, Germany',
+      value: 'de/fra',
+    },
+    {
+      name: 'Las Vegas, USA',
+      value: 'us/las',
+    },
+    {
+      name: 'Newark, USA',
+      value: 'us/ewr',
+    },
+    {
+      name: 'Berlin, Germany',
+      value: 'de/txl',
+    },
+    {
+      name: 'London, UK',
+      value: 'gb/lhr',
+    },
+    {
+      name: 'Logroño, Spain',
+      value: 'es/vit',
+    },
+    {
+      name: 'Paris, France',
+      value: 'fr/par',
+    },
+    {
+      name: 'Paris, France',
+      value: 'fr/par',
+    },
+  ],
 });
+
