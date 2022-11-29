@@ -47,10 +47,11 @@ export default Ember.Component.extend(NodeDriver, {
       type: '%%DRIVERNAME%%Config',
       cores: 2,
       ram: 2048,
+      userData: '',
       token: '',
       username: '',
       password: '',
-      endpoint: '',
+      endpoint: 'https://api.ionos.com/cloudapi/v6',
 
     });
 
@@ -85,8 +86,35 @@ export default Ember.Component.extend(NodeDriver, {
   },
 
   // Any computed properties or custom logic can go here
+  // duplicated dict k/v pairs in favor of cleaner hbs template - be my guest if you want to change this
   zoneOptions: [
-    'AUTO', 'ZONE_1', 'ZONE_2', 'ZONE_3'
+    {
+      name: 'AUTO',
+      value: 'AUTO',
+    },
+    {
+      name: 'ZONE_1',
+      value: 'ZONE_1',
+    },
+    {
+      name: 'ZONE_2',
+      value: 'ZONE_2',
+    },
+    {
+      name: 'ZONE_3',
+      value: 'ZONE_3',
+    },
+  ],
+  // again duplicated k/v pairs for easier hbs integration. change this if you want
+  diskOptions: [
+    {
+      name: 'HDD',
+      value: 'HDD',
+    },
+    {
+      name: 'SSD',
+      value: 'SSD',
+    },
   ],
   locationOptions: [
     {

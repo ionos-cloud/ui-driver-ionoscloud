@@ -47,6 +47,7 @@
               value=config.endpoint
               placeholder="https://api.ionos.com/cloudapi/v6"
           }}
+          <p class="help-block">Optional</p>
         </div>
       </div>
     {{/accordion-list-item}}
@@ -97,25 +98,79 @@
         </div>
       </div>
       <div class="row">
-        <div class="col">
+        <div class="col span-12">
           <label class="acc-label">CPU core count</label>
           {{input-integer
-                  value=config.cores
-                  placeholder=4
-                  classNames="form-control"
+            value=config.cores
+            placeholder=4
+            classNames="form-control"
           }}
         </div>
-        <div class="col span-4">
+      </div>
+      <div class="row">
+        <div class="col span-6">
+          <label class="acc-label">Image Alias or ID</label>
+          {{input type="text"
+            value=config.image
+            placeholder="ubuntu:18.04"
+            classNames="form-control"
+          }}
+          <p class="help-block">You can use <a href="https://docs.ionos.com/cli-ionosctl">ionosctl image list [-F name=operatingSystem]</a></p>
+        </div>
+        <div class="col span-6">
+          <label class="acc-label">Image Password</label>
+          {{input type="password"
+                  value=config.imagePassword
+                  placeholder="abcde12345"
+                  classNames="form-control"
+          }}
+          <p class="help-block">Can be used to connect to the VM</p>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col span-6">
           <label class="acc-label">RAM</label>
           <div class="input-group">
             {{input-integer min=256
                             value=config.ram
                             classNames="form-control"
             }}
-            <div class="input-group-addon bg-default">MB</div>
+            <div class="input-group-addon bg-default">MiB</div>
+          </div>
+        </div>
+        <div class="col span-6">
+          <label class="acc-label">Storage</label>
+          <div class="input-group">
+            {{input-integer value=config.diskSize
+                            classNames="form-control"
+            }}
+            <div class="input-group-addon bg-default">GB</div>
           </div>
         </div>
       </div>
+      <div class="row">
+        <div class="col span-12">
+          <label class="acc-label">Cloud init configuration.</label>
+          <textarea id="editor" value={{config.userData}} onchange={{action (mut config.userData) value="target.value" }} rows="3" style="width: 100%; resize: vertical"></textarea>
+        </div>
+      </div>
+
+<!--    Uncomment lines here to add ACE editor for CloudINIT. TODO-->
+<!--      <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.13.1/ace.js" integrity="sha512-IQmiIneKUJhTJElpHOlsrb3jpF7r54AzhCTi7BTDLiBVg0f7mrEqWVCmOeoqKv5hDdyf3rbbxBUgYf4u3O/QcQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>-->
+<!--      <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.13.1/ext-language_tools.min.js" integrity="sha512-yszTJ9Ko+JGmUNZYpHStWpMg2rSXrh2WjSSZGydzpHY+qOS/3nSgA+hBHUK3RvLhfjycKL8XWEmfUCZod/mEqA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>-->
+<!--      <script>-->
+<!--        // ace.require("ace/ext/language_tools");-->
+<!--        const editor = ace.edit("editor");-->
+<!--        editor.setTheme("ace/theme/twilight");-->
+<!--        editor.session.setMode("ace/mode/c_cpp");-->
+<!--        editor.setOptions({-->
+<!--          enableBasicAutocompletion: true,-->
+<!--          enableSnippets: true,-->
+<!--          enableLiveAutocompletion: true-->
+<!--        });-->
+<!--        editor.resize();-->
+<!--      </script>-->
+
     {{/accordion-list-item}}
 
     {{!-- This following contains the Name, Labels and Engine Options fields --}}
