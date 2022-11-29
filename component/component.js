@@ -114,5 +114,20 @@ export default Ember.Component.extend(NodeDriver, {
       value: 'fr/par',
     },
   ],
+
+  cpuOptions: [
+    {
+      name: 'Intel SKYLAKE (Only in EUROPE)',
+      value: 'INTEL_SKYLAKE',
+    },
+    {
+      name: 'AMD OPTERON (Only in USA)',
+      value: 'AMD_OPTERON',
+    },
+    {
+      name: 'Intel XEON (Only in USA)',
+      value: 'INTEL_XEON',
+    },
+  ],
 });
 
