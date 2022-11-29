@@ -145,10 +145,6 @@ export default Ember.Component.extend(NodeDriver, {
       name: 'Paris, France',
       value: 'fr/par',
     },
-    {
-      name: 'Paris, France',
-      value: 'fr/par',
-    },
   ],
 
   cpuOptions: [
