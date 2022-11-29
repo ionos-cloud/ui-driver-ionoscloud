@@ -3,32 +3,120 @@
     {{!-- This line shows the driver title which you don't have to change it --}}
     <div class="over-hr mb-20"><span>{{driverOptionsTitle}}</span></div>
 
-    {{!-- An example input option --}}
-    <div class="row box mt-20">
-      <h4>Instance Options</h4>
+    <!-- account access -->
+    {{#accordion-list-item title="Account Access"
+                           detail="API endpoint and credentials."
+                           expandAll=expandAll
+                           expand=(action expandFn)
+                           expandOnInit=true
+    }}
       <div class="row">
-        <div class="col span-2 col-inline">
-          <label>CPUs</label>
+        <div class="col span-6">
+          <label class="acc-label">Username. Fallback to Token if not set.</label>
+          {{input type="text"
+                  class="form-control"
+                  value=config.username
+                  placeholder="Your IONOS username"
+          }}
         </div>
+        <div class="col span-6">
+          <label class="acc-label">Password. Fallback to Token if not set.</label>
+          {{input type="password"
+                  class="form-control"
+                  value=config.password
+                  placeholder="Your IONOS password"
+          }}
+        </div>
+      </div>
+      <div class="row">
+        <div class="col span-12">
+          <label class="acc-label">API Token (Overrides Username & Password)</label>
+          {{input type="password"
+              class="form-control"
+              value=config.token
+              placeholder="Your IONOS token"
+          }}
+          <p class="help-block">You can use <a href="https://docs.ionos.com/cli-ionosctl/subcommands/authentication/token-generate">ionosctl</a> to generate an API token.</p>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col span-12">
+          <label class="acc-label">API Endpoint</label>
+          {{input type="text"
+              class="form-control"
+              value=config.endpoint
+              placeholder="https://api.ionos.com/cloudapi/v6"
+          }}
+        </div>
+      </div>
+    {{/accordion-list-item}}
 
-        <div class="col span-1">
-          {{config.cpuCount}}
+    <!-- account access -->
+    {{#accordion-list-item title="Instance Options"
+                           detail="VM settings. Set up your core count & ram."
+                           expandAll=expandAll
+                           expand=(action expandFn)
+                           expandOnInit=false
+    }}
+      <div class="row">
+        <div class="col span-3">
+          <label class="acc-label">Location</label>
+            {{new-select class="form-control"
+                         content=locationOptions
+                         optionLabelPath='name'
+                         optionValuePath='value'
+                         value=config.location
+            }}
         </div>
         <div class="col span-3">
-          {{input-slider value=config.cpuCount valueMin=1 valueMax=32}}
+          <label class="acc-label">CPU Family</label>
+            {{new-select class="form-control"
+                         content=cpuOptions
+                         optionLabelPath='name'
+                         optionValuePath='value'
+                         value=config.cpuFamily
+            }}
         </div>
-
-        <div class="col span-2 col-inline">
-          <label>Memory Size</label>
+        <div class="col span-3">
+          <label class="acc-label">Server Zone</label>
+          {{new-select class="form-control"
+                       content=zoneOptions
+                       optionLabelPath='name'
+                       optionValuePath='value'
+                       value=config.serverZone
+          }}
+        </div>
+        <div class="col span-3">
+          <label class="acc-label">Volume Zone</label>
+          {{new-select class="form-control"
+                       content=zoneOptions
+                       optionLabelPath='name'
+                       optionValuePath='value'
+                       value=config.volumeZone
+          }}
+        </div>
+      </div>
+      <div class="row">
+        <div class="col">
+          <label class="acc-label">CPU core count</label>
+          {{input-integer
+                  value=config.cores
+                  placeholder=4
+                  classNames="form-control"
+          }}
         </div>
         <div class="col span-4">
+          <label class="acc-label">RAM</label>
           <div class="input-group">
-            {{input-integer min=1 value=config.memorySize classNames="form-control"}}
+            {{input-integer min=256
+                            value=config.ram
+                            classNames="form-control"
+            }}
             <div class="input-group-addon bg-default">MB</div>
           </div>
         </div>
       </div>
-    </div>
+    {{/accordion-list-item}}
 
     {{!-- This following contains the Name, Labels and Engine Options fields --}}
     <div class="over-hr"><span>{{templateOptionsTitle}}</span></div>

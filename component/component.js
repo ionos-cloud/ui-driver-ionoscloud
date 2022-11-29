@@ -45,8 +45,13 @@ export default Ember.Component.extend(NodeDriver, {
     // bootstrap is called by rancher ui on 'init', you're better off doing your setup here rather then the init function to ensure everything is setup correctly
     let config = get(this, 'globalStore').createRecord({
       type: '%%DRIVERNAME%%Config',
-      cpuCount: 2,
-      memorySize: 2048,
+      cores: 2,
+      ram: 2048,
+      token: '',
+      username: '',
+      password: '',
+      endpoint: '',
+
     });
 
     set(this, 'model.%%DRIVERNAME%%Config', config);
@@ -80,11 +85,10 @@ export default Ember.Component.extend(NodeDriver, {
   },
 
   // Any computed properties or custom logic can go here
+  zoneOptions: [
+    'AUTO', 'ZONE_1', 'ZONE_2', 'ZONE_3'
+  ],
   locationOptions: [
-    {
-      name: 'Frankfurt, Germany',
-      value: 'de/fra',
-    },
     {
       name: 'Las Vegas, USA',
       value: 'us/las',
@@ -92,6 +96,10 @@ export default Ember.Component.extend(NodeDriver, {
     {
       name: 'Newark, USA',
       value: 'us/ewr',
+    },
+    {
+      name: 'Frankfurt, Germany',
+      value: 'de/fra',
     },
     {
       name: 'Berlin, Germany',
@@ -117,15 +125,15 @@ export default Ember.Component.extend(NodeDriver, {
 
   cpuOptions: [
     {
-      name: 'Intel SKYLAKE (Only in EUROPE)',
+      name: 'Intel SKYLAKE (Europe)',
       value: 'INTEL_SKYLAKE',
     },
     {
-      name: 'AMD OPTERON (Only in USA)',
+      name: 'AMD OPTERON (USA)',
       value: 'AMD_OPTERON',
     },
     {
-      name: 'Intel XEON (Only in USA)',
+      name: 'Intel XEON (USA)',
       value: 'INTEL_XEON',
     },
   ],
