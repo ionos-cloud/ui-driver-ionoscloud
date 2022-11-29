@@ -42,7 +42,7 @@ gulp.task('styles', gulp.series('clean', function () {
     .pipe(replace(NAME_TOKEN, DRIVER_NAME))
     .pipe(gulpConcat(`component.css`, { newLine: ';\n' }))
     .pipe(gulp.dest(DIST));
-}))
+}));
 
 gulp.task('assets', gulp.series('styles', function () {
   return gulp.src(ASSETS + '*')
@@ -69,7 +69,7 @@ gulp.task('babel', gulp.series('assets', function () {
     ],
     comments: false,
     moduleId: `nodes/components/driver-${DRIVER_NAME}/component`
-  }
+  };
 
   let hbs = fs.readFileSync(`${BASE}template.hbs`, 'utf8');
 
@@ -107,7 +107,7 @@ gulp.task('rexport', gulp.series('babel', function () {
     ],
     comments: false,
     moduleId: `ui/components/driver-${DRIVER_NAME}/component`
-  }
+  };
   return gulp.src([
     `${BASE}rexport.js`
   ])
