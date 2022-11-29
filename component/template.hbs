@@ -163,6 +163,16 @@
     }}
       <div class="row">
         <div class="col span-12">
+          <label class="acc-label">SSH User</label>
+          {{input type="text"
+                  value=config.sshUser
+                  classNames="form-control"
+          }}
+          <p class="help-block">Optional. User to connect to via SSH.</p>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col span-9">
           <label class="acc-label">IONOS Datacenter ID</label>
           {{input type="text"
                   value=config.datacenterId
@@ -170,17 +180,16 @@
           }}
           <p class="help-block">Optional, UUID-4 format. If you want to use an existing IONOS Datacenter to host this VM, you can provide its ID here.</p>
         </div>
-      </div>
-      <div class="row">
-        <div class="col span-12">
+        <div class="col span-3">
           <label class="acc-label">IONOS Lan ID</label>
           {{input-integer
-              value=config.lanId
-              classNames="form-control"
+            value=config.lanId
+            classNames="form-control"
           }}
-          <p class="help-block">Optional, integer format. If you want to use an existing IONOS Lan to host this VM, you can provide its ID here.</p>
+          <p class="help-block">Optional, integer. You can provide one of the LANs on the given Datacenter.</p>
         </div>
       </div>
+
     {{/accordion-list-item}}
 
       <!--    Uncomment lines here to add ACE editor for CloudINIT. TODO-->
