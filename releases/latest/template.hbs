@@ -1,0 +1,251 @@
+<section class="horizontal-form">
+  {{#accordion-list showExpandAll=false as | al expandFn |}}
+    {{!-- This line shows the driver title which you don't have to change it --}}
+    <div class="over-hr mb-20"><span>{{driverOptionsTitle}}</span></div>
+
+    {{#accordion-list-item title="Account Access"
+                           detail="API endpoint and credentials."
+                           expandAll=expandAll
+                           expand=(action expandFn)
+                           expandOnInit=true
+    }}
+      <div class="row">
+        <div class="col span-6">
+          <label class="acc-label">Username. Fallback to Token if not set.</label>
+          {{input type="text"
+                  class="form-control"
+                  value=config.username
+                  placeholder="Your IONOS username"
+          }}
+        </div>
+        <div class="col span-6">
+          <label class="acc-label">Password. Fallback to Token if not set.</label>
+          {{input type="password"
+                  class="form-control"
+                  value=config.password
+                  placeholder="Your IONOS password"
+          }}
+        </div>
+      </div>
+      <div class="row">
+        <div class="col span-12">
+          <label class="acc-label">API Token (Overrides Username & Password)</label>
+          {{input type="password"
+              class="form-control"
+              value=config.token
+              placeholder="Your IONOS token"
+          }}
+          <p class="help-block">You can use <a href="https://docs.ionos.com/cli-ionosctl/subcommands/authentication/token-generate" target="_blank" rel="noopener noreferrer">ionosctl</a> to generate an API token.</p>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col span-12">
+          <label class="acc-label">API Endpoint</label>
+          {{input type="text"
+              class="form-control"
+              value=config.endpoint
+              placeholder="https://api.ionos.com/cloudapi/v6"
+          }}
+          <p class="help-block">Optional</p>
+        </div>
+      </div>
+    {{/accordion-list-item}}
+
+    {{#accordion-list-item title="Instance Options"
+                           detail="VM settings. Set up your core count & ram."
+                           expandAll=expandAll
+                           expand=(action expandFn)
+                           expandOnInit=false
+    }}
+      <div class="row">
+        <div class="col span-3">
+          <label class="acc-label">Location</label>
+            {{new-select class="form-control"
+                         content=locationOptions
+                         optionLabelPath='name'
+                         optionValuePath='value'
+                         value=config.location
+            }}
+        </div>
+        <div class="col span-3">
+          <label class="acc-label">CPU Family</label>
+            {{new-select class="form-control"
+                         content=cpuOptions
+                         optionLabelPath='name'
+                         optionValuePath='value'
+                         value=config.cpuFamily
+            }}
+        </div>
+        <div class="col span-3">
+          <label class="acc-label">Server Zone</label>
+          {{new-select class="form-control"
+                       content=zoneOptions
+                       optionLabelPath='name'
+                       optionValuePath='value'
+                       value=config.serverZone
+          }}
+        </div>
+        <div class="col span-3">
+          <label class="acc-label">Volume Zone</label>
+          {{new-select class="form-control"
+                       content=zoneOptions
+                       optionLabelPath='name'
+                       optionValuePath='value'
+                       value=config.volumeZone
+          }}
+        </div>
+      </div>
+      <div class="row">
+        <div class="col span-6">
+          <label class="acc-label">CPU core count</label>
+          {{input-integer
+            value=config.cores
+            placeholder=4
+            classNames="form-control"
+          }}
+        </div>
+        <div class="col span-6">
+          <label class="acc-label">RAM</label>
+          <div class="input-group">
+            {{input-integer min=256
+                            value=config.ram
+                            classNames="form-control"
+            }}
+            <div class="input-group-addon bg-default">MiB</div>
+          </div>
+          <p class="help-block">Must be a multiple of 256</p>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col span-6">
+          <label class="acc-label">Storage Size</label>
+          <div class="input-group">
+            {{input-integer value=config.diskSize
+                            classNames="form-control"
+            }}
+            <div class="input-group-addon bg-default">GB</div>
+          </div>
+        </div>
+        <div class="col span-6">
+          <label class="acc-label">Storage Type</label>
+          {{new-select class="form-control"
+                       content=storageTypeOptions
+                       optionLabelPath='name'
+                       optionValuePath='value'
+                       value=config.diskType
+          }}
+        </div>
+      </div>
+      <div class="row">
+        <div class="col span-6">
+          <label class="acc-label">Image Alias or ID</label>
+          {{input type="text"
+                  value=config.image
+                  placeholder="ubuntu:18.04"
+                  classNames="form-control"
+          }}
+          <p class="help-block">You can use <a href="https://docs.ionos.com/cli-ionosctl" target="_blank" rel="noopener noreferrer">ionosctl image list [-F name=operatingSystem]</a></p>
+        </div>
+        <div class="col span-6">
+          <label class="acc-label">Image Password</label>
+          {{input type="password"
+                  value=config.imagePassword
+                  placeholder="abcde12345"
+                  classNames="form-control"
+          }}
+          <p class="help-block">Can be used to connect to the VM</p>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col span-12">
+          <label class="acc-label">Cloud init configuration.</label>
+          <textarea id="editor" value={{config.userData}} onchange={{action (mut config.userData) value="target.value" }} rows="3" style="width: 100%; resize: vertical"></textarea>
+          <p class="help-block">Optional. <a href="https://cloudinit.readthedocs.io/en/latest/topics/examples.html" target="_blank" rel="noopener noreferrer">Cloud-init Documentation</a>.</p>
+        </div>
+      </div>
+    {{/accordion-list-item}}
+
+    {{#accordion-list-item title="Network Options"
+                           detail="Set up your target Datacenter, LAN, and other network settings here."
+                           expandAll=expandAll
+                           expand=(action expandFn)
+                           expandOnInit=false
+    }}
+      <div class="row">
+        <div class="col span-12">
+          <label class="acc-label">SSH User</label>
+          {{input type="text"
+                  value=config.sshUser
+                  classNames="form-control"
+          }}
+          <p class="help-block">Optional. User to connect to via SSH.</p>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col span-9">
+          <label class="acc-label">IONOS Datacenter ID</label>
+          {{input type="text"
+                  value=config.datacenterId
+                  classNames="form-control"
+          }}
+          <p class="help-block">Optional, UUID-4 format. If you want to use an existing IONOS Datacenter to host this VM, you can provide its ID here.</p>
+        </div>
+        <div class="col span-3">
+          <label class="acc-label">IONOS Lan ID</label>
+          {{input-integer
+            value=config.lanId
+            classNames="form-control"
+          }}
+          <p class="help-block">Optional, integer. You can provide one of the LANs on the given Datacenter.</p>
+        </div>
+      </div>
+
+    {{/accordion-list-item}}
+
+      <!--    Uncomment lines here to add ACE editor for CloudINIT. TODO-->
+<!--      <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.13.1/ace.js" integrity="sha512-IQmiIneKUJhTJElpHOlsrb3jpF7r54AzhCTi7BTDLiBVg0f7mrEqWVCmOeoqKv5hDdyf3rbbxBUgYf4u3O/QcQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>-->
+<!--      <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.13.1/ext-language_tools.min.js" integrity="sha512-yszTJ9Ko+JGmUNZYpHStWpMg2rSXrh2WjSSZGydzpHY+qOS/3nSgA+hBHUK3RvLhfjycKL8XWEmfUCZod/mEqA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>-->
+<!--      <script>-->
+<!--        // ace.require("ace/ext/language_tools");-->
+<!--        const editor = ace.edit("editor");-->
+<!--        editor.setTheme("ace/theme/twilight");-->
+<!--        editor.session.setMode("ace/mode/c_cpp");-->
+<!--        editor.setOptions({-->
+<!--          enableBasicAutocompletion: true,-->
+<!--          enableSnippets: true,-->
+<!--          enableLiveAutocompletion: true-->
+<!--        });-->
+<!--        editor.resize();-->
+<!--      </script>-->
+
+    {{!-- This following contains the Name, Labels and Engine Options fields --}}
+    <div class="over-hr"><span>{{templateOptionsTitle}}</span></div>
+
+    {{form-name-description
+      model=model
+      nameRequired=true
+    }}
+
+    {{form-user-labels
+      initialLabels=labelResource.labels
+      setLabels=(action 'setLabels')
+      expandAll=expandAll
+      expand=(action expandFn)
+    }}
+
+    {{form-engine-opts
+      machine=model
+      showEngineUrl=showEngineUrl
+    }}
+  {{/accordion-list}}
+
+  {{!-- This component shows errors produced by validate() in the component --}}
+  {{top-errors errors=errors}}
+
+  {{!-- This component shows the Create and Cancel buttons --}}
+  {{save-cancel
+    save=(action "save")
+    cancel=(action "cancel")
+    editing=editing
+  }}
+</section>
