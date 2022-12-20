@@ -96,7 +96,7 @@
         </div>
       </div>
       <div class="row">
-        <div class="col span-12">
+        <div class="col span-6">
           <label class="acc-label">CPU core count</label>
           {{input-integer
             value=config.cores
@@ -104,14 +104,45 @@
             classNames="form-control"
           }}
         </div>
+        <div class="col span-6">
+          <label class="acc-label">RAM</label>
+          <div class="input-group">
+            {{input-integer min=256
+                            value=config.ram
+                            classNames="form-control"
+            }}
+            <div class="input-group-addon bg-default">MiB</div>
+          </div>
+          <p class="help-block">Must be a multiple of 256</p>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col span-6">
+          <label class="acc-label">Storage Size</label>
+          <div class="input-group">
+            {{input-integer value=config.diskSize
+                            classNames="form-control"
+            }}
+            <div class="input-group-addon bg-default">GB</div>
+          </div>
+        </div>
+        <div class="col span-6">
+          <label class="acc-label">Storage Type</label>
+          {{new-select class="form-control"
+                       content=storageTypeOptions
+                       optionLabelPath='name'
+                       optionValuePath='value'
+                       value=config.diskType
+          }}
+        </div>
       </div>
       <div class="row">
         <div class="col span-6">
           <label class="acc-label">Image Alias or ID</label>
           {{input type="text"
-            value=config.image
-            placeholder="ubuntu:18.04"
-            classNames="form-control"
+                  value=config.image
+                  placeholder="ubuntu:18.04"
+                  classNames="form-control"
           }}
           <p class="help-block">You can use <a href="https://docs.ionos.com/cli-ionosctl" target="_blank" rel="noopener noreferrer">ionosctl image list [-F name=operatingSystem]</a></p>
         </div>
@@ -123,27 +154,6 @@
                   classNames="form-control"
           }}
           <p class="help-block">Can be used to connect to the VM</p>
-        </div>
-      </div>
-      <div class="row">
-        <div class="col span-6">
-          <label class="acc-label">RAM</label>
-          <div class="input-group">
-            {{input-integer min=256
-                            value=config.ram
-                            classNames="form-control"
-            }}
-            <div class="input-group-addon bg-default">MiB</div>
-          </div>
-        </div>
-        <div class="col span-6">
-          <label class="acc-label">Storage</label>
-          <div class="input-group">
-            {{input-integer value=config.diskSize
-                            classNames="form-control"
-            }}
-            <div class="input-group-addon bg-default">GB</div>
-          </div>
         </div>
       </div>
       <div class="row">

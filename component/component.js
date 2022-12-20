@@ -105,17 +105,9 @@ export default Ember.Component.extend(NodeDriver, {
       value: 'ZONE_3',
     },
   ],
-  // again duplicated k/v pairs for easier hbs integration. change this if you want
-  diskOptions: [
-    {
-      name: 'HDD',
-      value: 'HDD',
-    },
-    {
-      name: 'SSD',
-      value: 'SSD',
-    },
-  ],
+
+  // TODO: Should restrict CPU locations based on the location chosen
+  // TODO: Should be restricted by DatacenterID to the Datacenter's location, if set
   locationOptions: [
     {
       name: 'Las Vegas, USA',
@@ -147,6 +139,8 @@ export default Ember.Component.extend(NodeDriver, {
     },
   ],
 
+  // Do you have a better option? Open a PR or an issue!
+  // TODO: Should be restricted by LocationOptions.
   cpuOptions: [
     {
       name: 'Intel SKYLAKE (Europe)',
@@ -161,5 +155,17 @@ export default Ember.Component.extend(NodeDriver, {
       value: 'INTEL_XEON',
     },
   ],
+
+  // Do you have a better option? Open a PR or an issue!
+  storageTypeOptions: [
+    {
+      name: 'HDD',
+      value: 'HDD',
+    },
+    {
+      name: 'SSD',
+      value: 'SSD'
+    },
+  ]
 });
 
