@@ -240,6 +240,32 @@
           <p class="help-block">String. If you want to use an existing IONOS LAN, you can change the name here. Please note that if the ID is set it will the prioritized.</p>
         </div>
       </div>
+      <div class="row">
+        <div class="col span-8">
+          <label class="acc-label">NAT Public IPs</label>
+          {{#each config.natIps as |item index|}}
+            <div class="row">
+              {{input value=item placeholder="IP" class="col span-10 autowidth"}}
+              <button class="btn btn-danger col span-2 bg-default" {{action "removeNatIp" index}}> X </button>
+            </div>
+          {{/each}}
+          <p class="help-block">Optional, collection of public IP addresses of the NAT Gateway. Should be reserved IP addresses in that location.</p>
+          <button class="btn btn-primary" {{action "addNatIp"}}>+</button>
+        </div>
+
+        <div class="col span-4">
+          <label class="acc-label">NAT Public IPs</label>
+          {{#each config.natIps as |item index|}}
+            <div class="row">
+              {{input value=item placeholder="IP" class="col autowidth"}}
+              <button class="btn btn-danger col bg-default" {{action "removeNatIp" index}}>X</button>
+            </div>
+          {{/each}}
+          <p class="help-block">Optional, collection of public IP addresses of the NAT Gateway. Should be reserved IP addresses in that location.</p>
+          <button class="btn btn-primary" {{action "addNatIp"}}>+</button>
+        </div>
+
+      </div>
 
     {{/accordion-list-item}}
 
