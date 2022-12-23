@@ -182,7 +182,7 @@
         </div>
       </div>
       <div class="row">
-        <div class="col span-9">
+        <div class="col span-8">
           <label class="acc-label">IONOS Datacenter ID</label>
           {{input type="text"
                   value=config.datacenterId
@@ -190,7 +190,7 @@
           }}
           <p class="help-block">Optional, UUID-4 format. If you want to use an existing IONOS Datacenter to host this VM, you can provide its ID here.</p>
         </div>
-        <div class="col span-3">
+        <div class="col span-4">
           <label class="acc-label">IONOS Lan ID</label>
           {{input-integer
             value=config.lanId
@@ -198,6 +198,32 @@
           }}
           <p class="help-block">Optional, integer. You can provide one of the LANs on the given Datacenter.</p>
         </div>
+      </div>
+      <div class="row">
+        <div class="col span-8">
+          <label class="acc-label">NAT Public IPs</label>
+          {{#each config.natIps as |item index|}}
+            <div class="row">
+              {{input value=item placeholder="IP" class="col span-10 autowidth"}}
+              <button class="btn btn-danger col span-2 bg-default" {{action "removeNatIp" index}}> X </button>
+            </div>
+          {{/each}}
+          <p class="help-block">Optional, collection of public IP addresses of the NAT Gateway. Should be reserved IP addresses in that location.</p>
+          <button class="btn btn-primary" {{action "addNatIp"}}>+</button>
+        </div>
+
+        <div class="col span-4">
+          <label class="acc-label">NAT Public IPs</label>
+          {{#each config.natIps as |item index|}}
+            <div class="row">
+              {{input value=item placeholder="IP" class="col autowidth"}}
+              <button class="btn btn-danger col bg-default" {{action "removeNatIp" index}}>X</button>
+            </div>
+          {{/each}}
+          <p class="help-block">Optional, collection of public IP addresses of the NAT Gateway. Should be reserved IP addresses in that location.</p>
+          <button class="btn btn-primary" {{action "addNatIp"}}>+</button>
+        </div>
+
       </div>
 
     {{/accordion-list-item}}

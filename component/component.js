@@ -36,9 +36,17 @@ export default Ember.Component.extend(NodeDriver, {
     set(this,'layout', template);
 
     this._super(...arguments);
-
   },
   /*!!!!!!!!!!!DO NOT CHANGE END!!!!!!!!!!!*/
+
+  actions: {
+    addNatIp() {
+      this.get('config.natIps').pushObject('');
+    },
+    removeNatIp(index) {
+      this.get('config.natIps').removeAt(index);
+    }
+  },
 
   // Write your component here, starting with setting 'model' to a machine with your config populated
   bootstrap: function() {
@@ -52,8 +60,10 @@ export default Ember.Component.extend(NodeDriver, {
       username: '',
       password: '',
       endpoint: 'https://api.ionos.com/cloudapi/v6',
-
+      natIps: [],
     });
+
+    // config.natIps.push('');
 
     set(this, 'model.%%DRIVERNAME%%Config', config);
   },
