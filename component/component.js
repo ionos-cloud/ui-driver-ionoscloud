@@ -40,12 +40,32 @@ export default Ember.Component.extend(NodeDriver, {
   /*!!!!!!!!!!!DO NOT CHANGE END!!!!!!!!!!!*/
 
   actions: {
-    addNatIp() {
-      this.get('config.natIps').pushObject('');
+    addGatewayIp(lan) {
+      lan.gatewayIps.pushObject('');
     },
-    removeNatIp(index) {
-      this.get('config.natIps').removeAt(index);
-    }
+
+    deleteGatewayIp(lan) {
+      lan.gatewayIps.removeAt(lan.gatewayIps.length - 1);
+    },
+
+    addLan(lanId) {
+      this.config.lans.pushObject({
+        id: lanId,
+        gatewayIps: [""],
+      });
+    },
+
+    deleteLan(lan) {
+      this.config.lans.removeObject(lan);
+    },
+
+    addPublicIp() {
+      this.config.publicIps.pushObject('');
+    },
+
+    deletePublicIp() {
+      this.config.publicIps.removeAt(this.config.publicIps.length - 1);
+    },
   },
 
   // Write your component here, starting with setting 'model' to a machine with your config populated

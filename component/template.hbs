@@ -229,7 +229,7 @@
             value=config.lanId
             classNames="form-control"
           }}
-          <p class="help-block">Optional, integer. You can provide one of the LANs on the given Datacenter.</p>
+          <p class="help-block">Optional, integer. The LAN the VM will attach to.</p>
         </div>
         <div class="col span-3">
           <label class="acc-label">IONOS Lan Name</label>
@@ -240,32 +240,35 @@
           <p class="help-block">String. If you want to use an existing IONOS LAN, you can change the name here. Please note that if the ID is set it will the prioritized.</p>
         </div>
       </div>
+      <!--  NAT Gateway settings  -->
       <div class="row">
-        <div class="col span-8">
-          <label class="acc-label">NAT Public IPs</label>
-          {{#each config.natIps as |item index|}}
-            <div class="row">
-              {{input value=item placeholder="IP" class="col span-10 autowidth"}}
-              <button class="btn btn-danger col span-2 bg-default" {{action "removeNatIp" index}}> X </button>
-            </div>
-          {{/each}}
-          <p class="help-block">Optional, collection of public IP addresses of the NAT Gateway. Should be reserved IP addresses in that location.</p>
-          <button class="btn btn-primary" {{action "addNatIp"}}>+</button>
+        <div class="col span-8 form-group">
+        <label class="acc-label">IONOS NAT Gateway</label>
+          <label class="acc-label">Add LAN</label>
+            {{input value=newLanId placeholder="Lan" classNames="form-control mb-2"}}
+            <button type="button" class="btn btn-primary" {{action "addLan" newLanId}}>Add LAN</button>
+            <label for="publicIps">Public IPs</label>
+            {{#each config.publicIps as |publicIp|}}
+              {{input value=publicIp placeholder="Gateway IP" classNames="form-control mb-2"}}
+            {{/each}}
+            <button type="button" class="btn btn-primary" {{action "addPublicIp"}}>+</button>
+            <button type="button" class="btn btn-primary" {{action "deletePublicIp"}}>-</button>
         </div>
 
-        <div class="col span-4">
-          <label class="acc-label">NAT Public IPs</label>
-          {{#each config.natIps as |item index|}}
-            <div class="row">
-              {{input value=item placeholder="IP" class="col autowidth"}}
-              <button class="btn btn-danger col bg-default" {{action "removeNatIp" index}}>X</button>
-            </div>
+        <div class="col span-4 form-group">
+          {{#each config.lans as |lan|}}
+            <label class="acc-label">Lan {{lan.id}} Gateway IPs</label>
+            {{#each lan.gatewayIps as |gatewayIp|}}
+              {{input value=gatewayIp placeholder="Gateway IP" classNames="form-control"}}
+            {{/each}}
+            <button type="button" class="btn btn-primary" {{action "addGatewayIp" lan}}>+</button>
+            <button type="button" class="btn btn-primary" {{action "deleteGatewayIp" lan}}>-</button>
+            <button type="button" class="btn btn-danger" {{action "deleteLan" lan}}>Delete LAN</button>
           {{/each}}
-          <p class="help-block">Optional, collection of public IP addresses of the NAT Gateway. Should be reserved IP addresses in that location.</p>
-          <button class="btn btn-primary" {{action "addNatIp"}}>+</button>
         </div>
 
-      </div>
+    </div>
+
 
     {{/accordion-list-item}}
 
