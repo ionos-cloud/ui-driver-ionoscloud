@@ -182,13 +182,21 @@
         </div>
       </div>
       <div class="row">
-        <div class="col span-9">
+        <div class="col span-6">
           <label class="acc-label">IONOS Datacenter ID</label>
           {{input type="text"
                   value=config.datacenterId
                   classNames="form-control"
           }}
           <p class="help-block">Optional, UUID-4 format. If you want to use an existing IONOS Datacenter to host this VM, you can provide its ID here.</p>
+        </div>
+        <div class="col span-3">
+          <label class="acc-label">IONOS Datacenter Name</label>
+          {{input type="text"
+                  value=config.datacenterName
+                  classNames="form-control"
+          }}
+          <p class="help-block">Optional, string. If you want to use an existing IONOS Datacenter to host this VM, you can provide its name here.</p>
         </div>
         <div class="col span-3">
           <label class="acc-label">IONOS Lan ID</label>
