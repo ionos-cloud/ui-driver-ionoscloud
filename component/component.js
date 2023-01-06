@@ -40,31 +40,47 @@ export default Ember.Component.extend(NodeDriver, {
   /*!!!!!!!!!!!DO NOT CHANGE END!!!!!!!!!!!*/
 
   actions: {
+    // Sets `config.natLansToGateways` to a map of LANs to Gateways interpretable by Docker Machine Driver: like 1=[10.0.0.1,10.0.0.2];2=[10.0.0.10]
+    updateNatLansToGatewaysMap() {
+      this.config.natLansToGateways = this.config.lans.map(lan => `${lan.id}=[${lan.gatewayIps.join(',')}]`).join(';');
+      console.log("natLansToGateways = " + this.config.natLansToGateways);
+    },
+
     addGatewayIp(lan) {
       lan.gatewayIps.pushObject('');
+      this.actions.updateNatLansToGatewaysMap();
     },
 
     deleteGatewayIp(lan) {
       lan.gatewayIps.removeAt(lan.gatewayIps.length - 1);
+      this.actions.updateNatLansToGatewaysMap();
     },
 
     addLan(lanId) {
+      lanId = parseInt(lanId);
+      if (isNaN(lanId)) {
+        alert('Please enter a valid integer for the LAN ID');
+        return;
+      }
+
       this.config.lans.pushObject({
         id: lanId,
         gatewayIps: [""],
       });
+      this.actions.updateNatLansToGatewaysMap();
     },
 
     deleteLan(lan) {
       this.config.lans.removeObject(lan);
+      this.actions.updateNatLansToGatewaysMap();
     },
 
     addPublicIp() {
-      this.config.publicIps.pushObject('');
+      this.config.natPublicIps.pushObject('');
     },
 
     deletePublicIp() {
-      this.config.publicIps.removeAt(this.config.publicIps.length - 1);
+      this.config.natPublicIps.removeAt(this.config.natPublicIps.length - 1);
     },
   },
 
@@ -82,8 +98,6 @@ export default Ember.Component.extend(NodeDriver, {
       endpoint: 'https://api.ionos.com/cloudapi/v6',
       serverType: 'ENTERPRISE',
     });
-
-    // config.natIps.push('');
 
     set(this, 'model.%%DRIVERNAME%%Config', config);
   },
