@@ -42,18 +42,26 @@ export default Ember.Component.extend(NodeDriver, {
   actions: {
     // Sets `config.natLansToGateways` to a map of LANs to Gateways interpretable by Docker Machine Driver: like 1=[10.0.0.1,10.0.0.2];2=[10.0.0.10]
     updateNatLansToGatewaysMap() {
-      this.config.natLansToGateways = this.config.lans.map(lan => `${lan.id}=[${lan.gatewayIps.join(',')}]`).join(';');
+      // Replace function with this commented line, if you want to include empty gateway IP fields
+      // this.config.natLansToGateways = this.config.lans.map(lan => `${lan.id}=[${lan.gatewayIps.join(',')}]`).join(';');
+      this.config.natLansToGateways = "";
+      this.config.lans.forEach(lan => {
+        let validIps = lan.gatewayIps.filter(ip => ip.trim() !== "");
+        if (validIps.length) {
+          this.config.natLansToGateways += `${lan.id}=[${validIps.join(',')}];`;
+        }
+      });
       console.log("natLansToGateways = " + this.config.natLansToGateways);
     },
 
     addGatewayIp(lan) {
       lan.gatewayIps.pushObject('');
-      this.actions.updateNatLansToGatewaysMap();
+      this.send('updateNatLansToGatewaysMap');
     },
 
     deleteGatewayIp(lan) {
       lan.gatewayIps.removeAt(lan.gatewayIps.length - 1);
-      this.actions.updateNatLansToGatewaysMap();
+      this.send('updateNatLansToGatewaysMap');
     },
 
     addLan(lanId) {
@@ -67,21 +75,21 @@ export default Ember.Component.extend(NodeDriver, {
         id: lanId,
         gatewayIps: [""],
       });
-      this.actions.updateNatLansToGatewaysMap();
+      this.send('updateNatLansToGatewaysMap');
     },
 
     deleteLan(lan) {
       this.config.lans.removeObject(lan);
-      this.actions.updateNatLansToGatewaysMap();
+      this.send('updateNatLansToGatewaysMap');
     },
 
     addPublicIp() {
       this.config.natPublicIps.pushObject('');
     },
 
-    deletePublicIp() {
-      this.config.natPublicIps.removeAt(this.config.natPublicIps.length - 1);
-    },
+    // deletePublicIp() {
+    //   this.config.natPublicIps.removeAt(this.config.natPublicIps.length - 1);
+    // },
   },
 
   // Write your component here, starting with setting 'model' to a machine with your config populated
