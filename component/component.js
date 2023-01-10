@@ -45,10 +45,16 @@ export default Ember.Component.extend(NodeDriver, {
       // Replace function with this commented line, if you want to include empty gateway IP fields
       // this.config.natLansToGateways = this.config.lans.map(lan => `${lan.id}=[${lan.gatewayIps.join(',')}]`).join(';');
       this.config.natLansToGateways = "";
-      this.config.lans.forEach(lan => {
+      let validIndex = 0;
+      this.config.lans.forEach((lan, index) => {
         let validIps = lan.gatewayIps.filter(ip => ip.trim() !== "");
         if (validIps.length) {
-          this.config.natLansToGateways += `${lan.id}=[${validIps.join(',')}];`;
+          this.config.natLansToGateways += `${lan.id}=[${validIps.join(',')}]`;
+          validIndex += 1;
+          // Only separate the LANs by ; if it's the not last one in the array
+          if (index !== this.config.lans.length - 1 && this.config.lans[index + 1].gatewayIps.filter(ip => ip.trim() !== "").length) {
+            this.config.natLansToGateways += ';';
+          }
         }
       });
       console.log("natLansToGateways = " + this.config.natLansToGateways);
