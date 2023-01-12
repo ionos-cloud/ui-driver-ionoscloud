@@ -250,27 +250,28 @@
               {{input value=newLanId placeholder="Lan" classNames="form-control mb-2"}}
               <button type="button" class="btn btn-primary btn-sm" {{action "addLan" newLanId}}>Add LAN</button>
             </div>
-            <label for="publicIps">Public IPs</label>
-            {{#each config.natPublicIps as |publicIp index|}}
-              {{input id=(concat "publicIp-" index) value=(mut publicIp) placeholder="Public IP" classNames="form-control mb-2"}}
+            {{#each config.lans as |lan|}}
+              <div class="row">
+                <label class="acc-label">Lan {{lan.id}} Gateway IPs</label>
+                {{#each lan.gatewayIps as |gatewayIp index|}}
+                  {{input id=(concat "gatewayIp-" lan.id "-" index)  value=(mut gatewayIp) placeholder="Gateway IP" classNames="form-control"}}
+                {{/each}}
+                <button type="button" class="btn btn-primary btn-sm" {{action "addGatewayIp" lan}}>+</button>
+                <button type="button" class="btn btn-outline-danger btn-sm" {{action "deleteGatewayIp" lan}}>-</button>
+                <button type="button" class="btn btn-outline-danger btn-sm" {{action "deleteLan" lan}}>Delete LAN</button>
+              </div>
             {{/each}}
-            <button type="button" class="btn btn-primary btn-sm" {{action "addPublicIp"}}>+</button>
-            <button type="button" class="btn btn-outline-danger btn-sm" {{action "deletePublicIp"}}>-</button>
           </div>
         </div>
 
         <div class="col span-4 form-group">
-          {{#each config.lans as |lan|}}
-            <div class="row">
-              <label class="acc-label">Lan {{lan.id}} Gateway IPs</label>
-              {{#each lan.gatewayIps as |gatewayIp index|}}
-                {{input id=(concat "gatewayIp-" lan.id "-" index)  value=(mut gatewayIp) placeholder="Gateway IP" classNames="form-control"}}
-              {{/each}}
-              <button type="button" class="btn btn-primary btn-sm" {{action "addGatewayIp" lan}}>+</button>
-              <button type="button" class="btn btn-outline-danger btn-sm" {{action "deleteGatewayIp" lan}}>-</button>
-              <button type="button" class="btn btn-outline-danger btn-sm" {{action "deleteLan" lan}}>Delete LAN</button>
-            </div>
+          <label for="publicIps">Public IPs</label>
+          {{#each config.natPublicIps as |publicIp index|}}
+            {{input id=(concat "publicIp-" index) value=(mut publicIp) placeholder="Public IP" classNames="form-control mb-2"}}
           {{/each}}
+          <button type="button" class="btn btn-primary btn-sm" {{action "addPublicIp"}}>+</button>
+          <button type="button" class="btn btn-outline-danger btn-sm" {{action "deletePublicIp"}}>-</button>
+
         </div>
 
     </div>
