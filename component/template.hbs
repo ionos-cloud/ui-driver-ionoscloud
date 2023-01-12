@@ -243,7 +243,7 @@
       <!--  NAT Gateway settings  -->
       <div class="row">
         <div class="col span-8 form-group">
-        <label class="acc-label">IONOS NAT Gateway</label>
+        <label>IONOS NAT Gateway</label>
           <div class="row">
 <!--            <label class="acc-label">Add LAN</label>-->
             <div>
@@ -258,18 +258,18 @@
                 <label class="acc-label">Lan {{lan.id}} Gateway IPs</label><br>
                 {{#each lan.gatewayIps as |gatewayIp index|}}
                   <div class="row">
-                    {{input id=(concat "gatewayIp-" lan.id "-" index) value=(mut gatewayIp) placeholder="Gateway IP" classNames="form-control col span-11 autowidth"}}
+                    {{input id=(concat "gatewayIp-" lan.id "-" index) value=(mut gatewayIp) placeholder="Gateway IP" classNames="form-control col span-11 autowidth" readonly=true}}
                     <button type="button" class="btn btn-outline-danger btn-sm col span-1" {{action "deleteGatewayIp" lan gatewayIp}}>-</button>
                   </div>
                 {{/each}}
-                <button type="button" class="btn btn-outline-danger btn-sm" {{action "deleteLan" lan}}>Delete LAN</button>
               </div>
             {{/each}}
           </div>
         </div>
 
         <div class="col span-4 form-group">
-          <label for="publicIps">Public IPs</label>
+          <label>Public IPs</label>
+
           {{#each config.natPublicIps as |publicIp index|}}
             {{input id=(concat "publicIp-" index) value=(mut publicIp) placeholder="Public IP" classNames="form-control mb-2 col span-10 autowidth" readonly=true}}
             <button type="button" class="btn btn-outline-danger btn-sm col span-2" {{action "deletePublicIp" index}}>-</button>
