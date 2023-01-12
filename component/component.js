@@ -65,8 +65,8 @@ export default Ember.Component.extend(NodeDriver, {
       this.send('updateNatLansToGatewaysMap');
     },
 
-    deleteGatewayIp(lan) {
-      lan.gatewayIps.removeAt(lan.gatewayIps.length - 1);
+    deleteGatewayIp(lan, index) {
+      lan.gatewayIps.removeAt(index);
       this.send('updateNatLansToGatewaysMap');
     },
 
