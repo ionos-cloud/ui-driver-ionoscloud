@@ -93,9 +93,9 @@ export default Ember.Component.extend(NodeDriver, {
       this.config.natPublicIps.pushObject('');
     },
 
-    // deletePublicIp() {
-    //   this.config.natPublicIps.removeAt(this.config.natPublicIps.length - 1);
-    // },
+    deletePublicIp(index) {
+      this.config.natPublicIps.removeAt(index);
+    },
   },
 
   // Write your component here, starting with setting 'model' to a machine with your config populated
