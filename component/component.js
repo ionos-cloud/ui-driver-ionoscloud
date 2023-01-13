@@ -60,8 +60,25 @@ export default Ember.Component.extend(NodeDriver, {
       console.log("natLansToGateways = " + this.config.natLansToGateways);
     },
 
-    addGatewayIp(lan) {
-      lan.gatewayIps.pushObject('');
+    addGatewayIp(lanId, gatewayIp) {
+      console.log("Adding " + gatewayIp + " to " + lanId);
+      let existingLan = this.config.lans.filter(function (lan) {
+        return lan.id === lanId;
+      })[0];
+
+      if (existingLan === undefined) {
+        console.log("Making new LAN:" + lanId);
+        this.config.lans.pushObject({
+          id: lanId,
+          gatewayIps: [gatewayIp],
+        });
+        existingLan = this.config.lans.slice(-1);
+        console.log("Made a new LAN:" + existingLan.id);
+      } else {
+        console.log("Lan " + lanId + " already exists");
+        existingLan.gatewayIps.pushObject(gatewayIp);
+      }
+
       this.send('updateNatLansToGatewaysMap');
     },
 
@@ -73,22 +90,9 @@ export default Ember.Component.extend(NodeDriver, {
       this.send('updateNatLansToGatewaysMap');
     },
 
-    addLan(lanId) {
-      lanId = parseInt(lanId);
-      if (isNaN(lanId)) {
-        alert('Please enter a valid integer for the LAN ID');
-        return;
-      }
-
-      this.config.lans.pushObject({
-        id: lanId,
-        gatewayIps: [""],
-      });
-      this.send('updateNatLansToGatewaysMap');
-    },
-
-    addPublicIp() {
-      this.config.natPublicIps.pushObject('');
+    addPublicIp(newPublicIp) {
+      this.config.natPublicIps.pushObject(newPublicIp);
+      this.set("newPublicIp", "");
     },
 
     deletePublicIp(index) {
