@@ -182,7 +182,7 @@
         </div>
       </div>
       <div class="row">
-        <div class="col span-6">
+        <div class="col span-3">
           <label class="acc-label">IONOS Datacenter ID</label>
           {{input type="text"
                   value=config.datacenterId
@@ -205,6 +205,14 @@
             classNames="form-control"
           }}
           <p class="help-block">Optional, integer. You can provide one of the LANs on the given Datacenter.</p>
+        </div>
+        <div class="col span-3">
+          <label class="acc-label">IONOS Lan Name</label>
+          {{input type="text"
+                  value=config.lanName
+                  classNames="form-control"
+          }}
+          <p class="help-block">String. If you want to use an existing IONOS LAN, you can change the name here. Please note that if the ID is set it will the prioritized.</p>
         </div>
       </div>
 
