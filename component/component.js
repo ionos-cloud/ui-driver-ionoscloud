@@ -43,7 +43,7 @@ export default Ember.Component.extend(NodeDriver, {
     // Sets `config.natLansToGateways` to a map of LANs to Gateways interpretable by Docker Machine Driver: like 1=[10.0.0.1,10.0.0.2]:2=[10.0.0.10]
     updateNatLansToGatewaysMap() {
       // Replace function with this commented line, if you want to include empty gateway IP fields
-      // this.config.natLansToGateways = this.config.lans.map(lan => `${lan.id}=[${lan.gatewayIps.join(',')}]`).join(';');
+      // this.config.natLansToGateways = this.config.lans.map(lan => `${lan.id}=[${lan.gatewayIps.join(',')}]`).join(':');
       this.config.natLansToGateways = "";
       let validIndex = 0;
       this.config.lans.forEach((lan, index) => {
@@ -51,13 +51,12 @@ export default Ember.Component.extend(NodeDriver, {
         if (validIps.length) {
           this.config.natLansToGateways += `${lan.id}=[${validIps.join(',')}]`;
           validIndex += 1;
-          // Only separate the LANs by ; if it's the not last one in the array
+          // Only separate the LANs by : if it's the not last one in the array
           if (index !== this.config.lans.length - 1 && this.config.lans[index + 1].gatewayIps.filter(ip => ip.trim() !== "").length) {
             this.config.natLansToGateways += ':';
           }
         }
       });
-      console.log("natLansToGateways = " + this.config.natLansToGateways);
     },
 
     addGatewayIp(lanId, gatewayIp) {
