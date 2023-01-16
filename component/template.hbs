@@ -268,7 +268,7 @@
         </div>
 
         <div class="col span-4 form-group">
-          <label>NAT Gateway Public IPs</label>
+          <label>NAT Gateway Public IPs</label><br/>
 
           {{#each config.natPublicIps as |publicIp index|}}
             {{input id=(concat "publicIp-" index) value=publicIp placeholder="Public IP" classNames="form-control mb-2 col span-10 autowidth" readonly=true}}
