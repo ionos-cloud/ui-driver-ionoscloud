@@ -5,3 +5,8 @@
 .autowidth {
   width: auto !important;
 }
+
+/* Apply this style to the parent div of the checkbox & label elements to make them the same size as the text inputs */
+.form-check {
+  padding: 8px 0 7px 0;
+}

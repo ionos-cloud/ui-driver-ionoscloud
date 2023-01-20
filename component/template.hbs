@@ -225,11 +225,26 @@
         </div>
         <div class="col span-3">
           <label class="acc-label">IONOS Lan ID</label>
+          <!-- TODO: This, if has input, should make DatacenterID a required input -->
           {{input-integer
             value=config.lanId
             classNames="form-control"
           }}
-          <p class="help-block">Optional, integer. The LAN the VM will attach to.</p>
+          <p class="help-block">Optional, integer. The LAN the VM will attach to. If blank, a default LAN will be created</p>
+        </div>
+        <div class="col span-6">
+          <label class="acc-label">Private LAN</label>
+          <div class="form-check" style="">
+            <input type="checkbox"
+                   name="isPrivateLan"
+                   value=config.privateLan
+                   class="form-check-input"
+                   id="privateLanCheckbox">
+            <label class="form-check-label" for="privateLanCheckbox">
+              Make Default LAN Private
+            </label>
+          </div>
+          <p class="help-block">Should the LAN created by default be made private?</p>
         </div>
         <div class="col span-3">
           <label class="acc-label">IONOS Lan Name</label>
@@ -242,8 +257,8 @@
       </div>
       <!--  NAT Gateway settings  -->
       <div class="row">
-        <div class="col span-8 form-group">
-        <label>NAT Gateway Gateway IPs</label>
+        <div class="col span-6 form-group">
+        <label>NAT Lans and Gateway IPs</label>
           <div class="row">
             <div>
               <div class="row">
@@ -266,7 +281,7 @@
           </div>
         </div>
 
-        <div class="col span-4 form-group">
+        <div class="col span-6 form-group">
           <label>NAT Gateway Public IPs</label><br/>
 
           {{#each config.natPublicIps as |publicIp index|}}
