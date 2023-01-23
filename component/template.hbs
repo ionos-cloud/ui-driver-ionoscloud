@@ -286,10 +286,10 @@
 
           {{#each config.natPublicIps as |publicIp index|}}
             {{input id=(concat "publicIp-" index) value=publicIp placeholder="Public IP" classNames="form-control mb-2 col span-10 autowidth" readonly=true}}
-            <button type="button" class="btn btn-outline-danger btn-sm col span-2" {{action "deletePublicIp" index}}>-</button>
+            <button type="button" class="btn btn-outline-danger btn-sm col span-2" {{action "deletePublicIp" index}}>-</button><br/>
           {{/each}}
           {{input id="newPublicIp" value=(mut newPublicIp) placeholder="New Public IP" classNames="form-control mb-2 col span-10 autowidth"}}
-          <button type="button" class="btn btn-outline-danger btn-sm col span-2" {{action "addPublicIp" newPublicIp}}>+</button>
+          <button type="button" class="btn btn-outline-danger btn-sm col span-2" {{action "addPublicIp" newPublicIp}}>+</button><br/>
         </div>
     </div>
 
