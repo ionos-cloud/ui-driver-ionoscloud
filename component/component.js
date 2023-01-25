@@ -49,6 +49,7 @@ export default Ember.Component.extend(NodeDriver, {
       ram: 2048,
       userData: '',
       token: '',
+      ServerType: 'ENTERPRISE',
       username: '',
       password: '',
       endpoint: 'https://api.ionos.com/cloudapi/v6',
@@ -141,6 +142,53 @@ export default Ember.Component.extend(NodeDriver, {
 
   // Do you have a better option? Open a PR or an issue!
   // TODO: Should be restricted by LocationOptions.
+
+  serverTypeOptions: [
+    {
+      name: 'ENTERPRISE',
+      value: 'ENTERPRISE',
+    },
+    {
+      name: 'CUBE',
+      value: 'CUBE',
+    },
+  ],
+
+  cubeServerTemplateOptions: [
+    {
+      name: 'XS',
+      value: 'CUBES XS',
+    },
+    {
+      name: 'S',
+      value: 'CUBES S',
+    },
+    {
+      name: 'M',
+      value: 'CUBES M',
+    },
+    {
+      name: 'L',
+      value: 'CUBES L',
+    },
+    {
+      name: 'XL',
+      value: 'CUBES XL',
+    },
+    {
+      name: 'XXL',
+      value: 'CUBES XXL',
+    },
+    {
+      name: '3XL',
+      value: 'CUBES 3XL',
+    },
+    {
+      name: '4XL',
+      value: 'CUBES 4XL',
+    },
+  ],
+
   cpuOptions: [
     {
       name: 'Intel SKYLAKE (Europe)',

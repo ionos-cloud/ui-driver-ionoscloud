@@ -68,6 +68,30 @@
             }}
         </div>
         <div class="col span-3">
+          <label class="acc-label">Server Type</label>
+            {{new-select class="form-control"
+                         content=serverTypeOptions
+                         optionLabelPath='name'
+                         optionValuePath='value'
+                         value=config.ServerType
+            }}
+        </div>
+        {{#if (eq config.ServerType "CUBE") }}
+        <div class="col span-3">
+          <label class="acc-label">CUBE Server Template</label>
+          {{new-select class="form-control"
+                       content=cubeServerTemplateOptions
+                       optionLabelPath='name'
+                       optionValuePath='value'
+                       value=config.Template
+          }}
+        </div>
+        {{/if}}
+      </div>
+      
+      {{#if (eq config.ServerType "ENTERPRISE") }}
+      <div class="row">
+        <div class="col span-3">
           <label class="acc-label">CPU Family</label>
             {{new-select class="form-control"
                          content=cpuOptions
@@ -136,6 +160,8 @@
           }}
         </div>
       </div>
+      {{else}}
+      {{/if}}
       <div class="row">
         <div class="col span-6">
           <label class="acc-label">Image Alias or ID</label>
