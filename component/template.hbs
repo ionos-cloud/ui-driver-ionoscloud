@@ -285,11 +285,15 @@
           <label>NAT Gateway Public IPs</label><br/>
 
           {{#each config.natPublicIps as |publicIp index|}}
-            {{input id=(concat "publicIp-" index) value=publicIp placeholder="Public IP" classNames="form-control mb-2 col span-10 autowidth" readonly=true}}
-            <button type="button" class="btn btn-outline-danger btn-sm col span-2" {{action "deletePublicIp" index}}>-</button><br/>
+          <div class="row">
+            {{input id=(concat "publicIp-" index) value=publicIp placeholder="Public IP" classNames="form-control mb-2 autowidth col" readonly=true}}
+            <button type="button" class="btn btn-outline-danger btn-sm col span-2" {{action "deletePublicIp" index}}>-</button>
+          </div>
           {{/each}}
-          {{input id="newPublicIp" value=(mut newPublicIp) placeholder="New Public IP" classNames="form-control mb-2 col span-10 autowidth"}}
-          <button type="button" class="btn btn-outline-danger btn-sm col span-2" {{action "addPublicIp" newPublicIp}}>+</button><br/>
+          <div class="row">
+            {{input id="newPublicIp" value=(mut newPublicIp) placeholder="New Public IP" classNames="form-control mb-2 autowidth col"}}
+            <button type="button" class="btn btn-outline-danger btn-sm col span-2" {{action "addPublicIp" newPublicIp}}>+</button>
+          </div>
         </div>
     </div>
 
@@ -297,20 +301,20 @@
     {{/accordion-list-item}}
 
       <!--    Uncomment lines here to add ACE editor for CloudINIT. TODO-->
-<!--      <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.13.1/ace.js" integrity="sha512-IQmiIneKUJhTJElpHOlsrb3jpF7r54AzhCTi7BTDLiBVg0f7mrEqWVCmOeoqKv5hDdyf3rbbxBUgYf4u3O/QcQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>-->
-<!--      <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.13.1/ext-language_tools.min.js" integrity="sha512-yszTJ9Ko+JGmUNZYpHStWpMg2rSXrh2WjSSZGydzpHY+qOS/3nSgA+hBHUK3RvLhfjycKL8XWEmfUCZod/mEqA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>-->
-<!--      <script>-->
-<!--        // ace.require("ace/ext/language_tools");-->
-<!--        const editor = ace.edit("editor");-->
-<!--        editor.setTheme("ace/theme/twilight");-->
-<!--        editor.session.setMode("ace/mode/c_cpp");-->
-<!--        editor.setOptions({-->
-<!--          enableBasicAutocompletion: true,-->
-<!--          enableSnippets: true,-->
-<!--          enableLiveAutocompletion: true-->
-<!--        });-->
-<!--        editor.resize();-->
-<!--      </script>-->
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.13.1/ace.js" integrity="sha512-IQmiIneKUJhTJElpHOlsrb3jpF7r54AzhCTi7BTDLiBVg0f7mrEqWVCmOeoqKv5hDdyf3rbbxBUgYf4u3O/QcQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.13.1/ext-language_tools.min.js" integrity="sha512-yszTJ9Ko+JGmUNZYpHStWpMg2rSXrh2WjSSZGydzpHY+qOS/3nSgA+hBHUK3RvLhfjycKL8XWEmfUCZod/mEqA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+      <script>
+        // ace.require("ace/ext/language_tools");
+        const editor = ace.edit("editor");
+        editor.setTheme("ace/theme/twilight");
+        editor.session.setMode("ace/mode/c_cpp");
+        editor.setOptions({
+          enableBasicAutocompletion: true,
+          enableSnippets: true,
+          enableLiveAutocompletion: true
+        });
+        editor.resize();
+      </script>
 
     {{!-- This following contains the Name, Labels and Engine Options fields --}}
     <div class="over-hr"><span>{{templateOptionsTitle}}</span></div>
