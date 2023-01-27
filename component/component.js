@@ -49,7 +49,6 @@ export default Ember.Component.extend(NodeDriver, {
       ram: 2048,
       userData: '',
       token: '',
-      ServerType: 'ENTERPRISE',
       username: '',
       password: '',
       endpoint: 'https://api.ionos.com/cloudapi/v6',
@@ -145,11 +144,11 @@ export default Ember.Component.extend(NodeDriver, {
 
   serverTypeOptions: [
     {
-      name: 'ENTERPRISE',
+      name: 'Enterprise',
       value: 'ENTERPRISE',
     },
     {
-      name: 'CUBE',
+      name: 'Cube',
       value: 'CUBE',
     },
   ],
