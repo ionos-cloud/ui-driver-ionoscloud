@@ -40,24 +40,34 @@ export default Ember.Component.extend(NodeDriver, {
   /*!!!!!!!!!!!DO NOT CHANGE END!!!!!!!!!!!*/
 
   actions: {
-    // Sets `config.natLansToGateways` to a map of LANs to Gateways interpretable by Docker Machine Driver: like 1=[10.0.0.1,10.0.0.2]:2=[10.0.0.10]
+    // Sets `config.natLansToGateways` to a map of LANs to Gateways interpretable by Docker Machine Driver: like 1=10.0.0.1,10.0.0.2:2=10.0.0.10
     updateNatLansToGatewaysMap() {
-      // Replace function with this commented line, if you want to include empty gateway IP fields
-      // this.config.natLansToGateways = this.config.lans.map(lan => `${lan.id}=[${lan.gatewayIps.join(',')}]`).join(':');
-      this.config.natLansToGateways = "";
-      let validIndex = 0;
-      this.config.lans.forEach((lan, index) => {
-        let validIps = lan.gatewayIps.filter(ip => ip.trim() !== "");
-        if (validIps.length) {
-          this.config.natLansToGateways += `${lan.id}=[${validIps.join(',')}]`;
-          validIndex += 1;
-          // Only separate the LANs by : if it's the not last one in the array
-          if (index !== this.config.lans.length - 1 && this.config.lans[index + 1].gatewayIps.filter(ip => ip.trim() !== "").length) {
-            this.config.natLansToGateways += ':';
-          }
-        }
-      });
+      this.config.natLansToGateways = this.config.lans.map(lan => `${lan.id}=${lan.gatewayIps.join(',')}`).join(':');
+      // this.config.natLansToGateways = "";
+      // let validIndex = 0;
+      // this.config.lans.forEach((lan, index) => {
+      //   let validIps = lan.gatewayIps.filter(ip => ip.trim() !== "");
+      //   if (validIps.length) {
+      //     this.config.natLansToGateways += `${lan.id}=${validIps.join(',')}`;
+      //     validIndex += 1;
+      //     Only separate the LANs by : if it's the not last one in the array
+          // if (index !== this.config.lans.length - 1 && this.config.lans[index + 1].gatewayIps.filter(ip => ip.trim() !== "").length) {
+          //   this.config.natLansToGateways += ':';
+          // }
+        // }
+      // });
       console.log("natMap = " + this.config.natLansToGateways);
+    },
+
+    // Builds this.config.lans from the natLansToGateways marshalled string
+    reverseNatLansToGatewaysMap(marshalledString) {
+      return marshalledString ? marshalledString.split(':').map(entry => {
+        const [id, gatewayIps] = entry.split('=');
+        return {
+          id: parseInt(id),
+          gatewayIps: gatewayIps ? gatewayIps.split(',') : []
+        };
+      }) : [];
     },
 
     addGatewayIp(lanId, gatewayIp) {
@@ -75,10 +85,7 @@ export default Ember.Component.extend(NodeDriver, {
           id: lanId,
           gatewayIps: [gatewayIp],
         });
-        existingLan = this.config.lans.slice(-1);
-        console.log("Made a new LAN:" + existingLan.id);
       } else {
-        console.log("Lan " + lanId + " already exists");
         existingLan.gatewayIps.pushObject(gatewayIp);
       }
 
@@ -117,6 +124,9 @@ export default Ember.Component.extend(NodeDriver, {
       endpoint: 'https://api.ionos.com/cloudapi/v6',
       serverType: 'ENTERPRISE',
     });
+
+    let natLansMap = get(config, 'natLansToGateways');
+    set(config, 'lans', this.actions.reverseNatLansToGatewaysMap(natLansMap));
 
     set(this, 'model.%%DRIVERNAME%%Config', config);
   },
