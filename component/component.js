@@ -60,6 +60,9 @@ export default Ember.Component.extend(NodeDriver, {
     },
 
     addGatewayIp(lanId, gatewayIp) {
+      if (gatewayIp === undefined) {
+        gatewayIp = "";
+      }
       console.log("Adding " + gatewayIp + " to " + lanId);
       let existingLan = this.config.lans.filter(function (lan) {
         return lan.id === lanId;
