@@ -52,7 +52,7 @@ export default Ember.Component.extend(NodeDriver, {
       username: '',
       password: '',
       endpoint: 'https://api.ionos.com/cloudapi/v6',
-
+      serverType: 'ENTERPRISE',
     });
 
     set(this, 'model.%%DRIVERNAME%%Config', config);
