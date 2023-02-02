@@ -57,6 +57,7 @@ export default Ember.Component.extend(NodeDriver, {
           }
         }
       });
+      console.log("natMap = " + this.config.natLansToGateways);
     },
 
     addGatewayIp(lanId, gatewayIp) {

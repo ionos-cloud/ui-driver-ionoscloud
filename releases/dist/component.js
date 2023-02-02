@@ -49,8 +49,13 @@ define("nodes/components/driver-ionoscloud/component", ["exports", "shared/mixin
             }
           }
         });
+        console.log("natMap = " + this.config.natLansToGateways);
       },
       addGatewayIp: function addGatewayIp(lanId, gatewayIp) {
+        if (gatewayIp === undefined) {
+          gatewayIp = "";
+        }
+
         console.log("Adding " + gatewayIp + " to " + lanId);
         var existingLan = this.config.lans.filter(function (lan) {
           return lan.id === lanId;
