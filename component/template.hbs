@@ -232,20 +232,6 @@
           }}
           <p class="help-block">Optional, integer. The LAN the VM will attach to. If blank, a default LAN will be created. Overrides "Private LAN" setting.</p>
         </div>
-        <div class="col span-6">
-          <label class="acc-label">Private LAN</label>
-          <div class="form-check" style="">
-            <input type="checkbox"
-                   name="isPrivateLan"
-                   value=config.privateLan
-                   class="form-check-input"
-                   id="privateLanCheckbox">
-            <label class="form-check-label" for="privateLanCheckbox">
-              Make Default LAN Private
-            </label>
-          </div>
-          <p class="help-block">If the default LAN does not exist, create a private LAN</p>
-        </div>
       </div>
       <div class="row">
         <div class="col span-12">
@@ -304,6 +290,36 @@
             <button type="button" class="btn btn-outline-danger btn-sm col span-2" {{action "addPublicIp" newPublicIp}}>+</button>
           </div>
           <p class="help-block">Required for custom NAT creation. Must be a reserved IPBlock IP for the chosen location.</p>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col span-6">
+          <label class="acc-label">Private LAN</label>
+          <div class="form-check" style="">
+            <input type="checkbox"
+                   name="isPrivateLan"
+                   value=config.privateLan
+                   class="form-check-input"
+                   id="privateLanCheckbox">
+            <label class="form-check-label" for="privateLanCheckbox">
+              Make Default LAN Private
+            </label>
+          </div>
+          <p class="help-block">If the default LAN does not exist, create a private LAN</p>
+        </div>
+        <div class="col span-6">
+          <label class="acc-label">Set newly created NAT as default route</label>
+          <div class="form-check" style="">
+            <input type="checkbox"
+                   name="defaultRouteCheckbox"
+                   value=config.natAsDefaultRoute
+                   class="form-check-input"
+                   id="defaultRouteCheckbox">
+            <label class="form-check-label" for="defaultRouteCheckbox">
+              Make NAT default route
+            </label>
+          </div>
+          <p class="help-block">If using the dynamic form to build a NAT, you can check this box to append `ip route add default via [IP]` to `runcmd` key of the cloud config YAML</p>
         </div>
       </div>
     {{/accordion-list-item}}
