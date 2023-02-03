@@ -41,15 +41,30 @@ export default Ember.Component.extend(NodeDriver, {
 
   lans: [], // An array of objects: { "lan": "LAN_ID", "gatewayIps": [IP_1, IP_2] }, { ... }. { ... }. Unmarshalled to the string natLansToGateways which is sent to the driver.
   actions: {
-    // Sets `config.natLansToGateways` to a map of LANs to Gateways interpretable by Docker Machine Driver: like 1=10.0.0.1,10.0.0.2:2=10.0.0.10
-    updateNatLansToGatewaysMap() {
+    save() {
+      this.set('config.natPublicIps', this.config.natPublicIps);
       this.config.natLansToGateways = this.lans.map(lan => `${lan.id}=${lan.gatewayIps.join(',')}`).join(':');
       console.log("natMap = " + this.config.natLansToGateways);
+      this.set('config.natLansToGateways', this.config.natLansToGateways)
+      console.log("Saved natLansToGateways: " + this.config.natLansToGateways)
+      this._super(...arguments);
+    },
+
+    // Sets `config.natLansToGateways` to a map of LANs to Gateways interpretable by Docker Machine Driver: like 1=10.0.0.1,10.0.0.2:2=10.0.0.10
+    updateNatLansToGatewaysMap() {
+      // this.config.natLansToGateways = this.lans.map(lan => `${lan.id}=${lan.gatewayIps.join(',')}`).join(':');
+      // console.log("natMap = " + this.config.natLansToGateways);
+      // this.set('config.natLansToGateways', this.config.natLansToGateways)
+      console.log("repurposed ;-)")
     },
 
     // Builds this.lans from the natLansToGateways marshalled string
-    reverseNatLansToGatewaysMap(marshalledString) {
-      console.log("reverseNatLansToGatewaysMap(" + marshalledString + ")")
+    reverseNatLansToGatewaysMap() {
+      let marshalledString = this.get('config.natLansToGateways')
+      if (!marshalledString) {
+        marshalledString = ""
+      }
+      console.log("reverseNatLansToGatewaysMap(" +  + ")")
       let lans = marshalledString ? marshalledString.split(':').map(entry => {
         const [id, gatewayIps] = entry.split('=');
         return {
@@ -58,7 +73,7 @@ export default Ember.Component.extend(NodeDriver, {
         };
       }) : [];
       console.log("ReverseNat => " + lans)
-      set(this, 'lans', lans)
+      this.set('lans', lans)
     },
 
     addGatewayIp(lanId, gatewayIp) {
@@ -92,7 +107,7 @@ export default Ember.Component.extend(NodeDriver, {
     },
 
     addPublicIp(newPublicIp) {
-      this.config.natPublicIps.pushObject(newPublicIp);
+      this.config.natPublicIps.pushObject(newPublicIp)
       this.set("newPublicIp", "");
     },
 
@@ -150,8 +165,7 @@ export default Ember.Component.extend(NodeDriver, {
     this._super(...arguments);
 
     // TODO: Attempt to load lans variable by unmarshalling saved natLansToGateways var
-    let natLansMap = this.get('config.natLansToGateways');
-    this.send('reverseNatLansToGatewaysMap', natLansMap);
+    this.send('reverseNatLansToGatewaysMap');
     console.log("lans = " + this.get("lans"))
   },
 
