@@ -261,7 +261,7 @@
               {{input value=gatewayIp placeholder="Gateway IP" classNames="form-control mb-2 col span-5 autowidth"}}
               <button type="button" class="btn btn-primary btn-sm col span-2" {{action "addGatewayIp" newLanId gatewayIp}}>Add</button>
             </div>
-            {{#each config.lans as |lan|}}
+            {{#each lans as |lan|}}
               <div class="row">
                 <label class="acc-label">Lan {{lan.id}} Gateway IPs</label><br/>
                 {{#each lan.gatewayIps as |gatewayIp index|}}
