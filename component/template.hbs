@@ -275,24 +275,24 @@
           <p class="help-block">String. If the preconfigured NAT Gateway checkbox is checked, will try creating a NAT with this name, if it doesn't exist.</p>
         </div>
         <div class="col span-4">
-          <label class="acc-label">Set newly created NAT as default route</label>
+          <label class="acc-label">Default NAT</label>
           <div class="form-check" style="">
             <input type="checkbox"
-                    name="defaultRouteCheckbox"
-                    value=config.natAsDefaultRoute
+                    name="defaultNatCheckbox"
+                    value=config.createDefaultNat
                     class="form-check-input"
-                    id="defaultRouteCheckbox">
-            <label class="form-check-label" for="defaultRouteCheckbox">
-              Make NAT default route
+                    id="defaultNatCheckbox">
+            <label class="form-check-label" for="defaultNatCheckbox">
+              Create a pre-configured NAT
             </label>
           </div>
-          <p class="help-block">If using the dynamic form to build a NAT, you can check this box to append `ip route add default via [IP]` to `runcmd` key of the cloud config YAML</p>
+          <p class="help-block">Experimental. Requires private LAN. Create a pre-configured NAT. <a href="#" target="_blank" rel="noopener noreferrer">See open ports here</a>.</p>
         </div>
       </div>
       <!-- Custom NAT Gateway settings  -->
       <div class="row">
         <div class="col span-6 form-group">
-        <label class="acc-label">Custom NAT Lans to their Gateway IPs</label>
+        <label class="acc-label">Custom NAT: map LANs to Gateway IPs</label>
           <div class="row">
             <div class="row">
               {{input value=newLanId placeholder="Lan ID" classNames="form-control mb-2 col span-5 autowidth"}}
@@ -301,7 +301,7 @@
             </div>
             {{#each lans as |lan|}}
               <div class="row">
-                <label class="acc-label">Lan {{lan.id}} Gateway IPs</label><br/>
+                <label class="acc-label">Lan {{lan.id}} Gateway IPs</label><br/></a>
                 {{#each lan.gatewayIps as |gatewayIp index|}}
                   <div class="row">
                     {{input id=(concat "gatewayIp-" lan.id "-" index) value=(mut gatewayIp) placeholder="Gateway IP" classNames="form-control col span-11 autowidth" readonly=true}}
@@ -315,7 +315,7 @@
         </div>
 
         <div class="col span-6 form-group">
-          <label class="acc-label">Custom NAT Gateway Public IPs</label><br/>
+          <label class="acc-label">Custom NAT: Public IPs</label><br/>
 
           {{#each config.natPublicIps as |publicIp index|}}
           <div class="row">
