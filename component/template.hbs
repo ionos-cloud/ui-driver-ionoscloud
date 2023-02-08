@@ -275,18 +275,18 @@
           <p class="help-block">String. If the preconfigured NAT Gateway checkbox is checked, will try creating a NAT with this name, if it doesn't exist.</p>
         </div>
         <div class="col span-4">
-          <label class="acc-label">Default NAT</label>
+          <label class="acc-label">Create a configurable NAT</label>
           <div class="form-check" style="">
             <input type="checkbox"
-                    name="defaultNatCheckbox"
-                    value=config.createDefaultNat
+                    name="createNatCheckbox"
+                    value=config.createNat
                     class="form-check-input"
-                    id="defaultNatCheckbox">
-            <label class="form-check-label" for="defaultNatCheckbox">
-              Create a pre-configured NAT
+                    id="createNatCheckbox">
+            <label class="form-check-label" for="createNatCheckbox">
+              Create NAT
             </label>
           </div>
-          <p class="help-block">Experimental. Requires private LAN. Create a pre-configured NAT. <a href="#" target="_blank" rel="noopener noreferrer">See open ports here</a>.</p>
+          <p class="help-block">Requires private LAN. You can override settings of this NAT using the form below <a href="#" target="_blank" rel="noopener noreferrer">See open ports here</a>. Must set gateway IP as default route via cloud config, default: 10.0.0.1</p>
         </div>
       </div>
       <!-- Custom NAT Gateway settings  -->
@@ -301,7 +301,7 @@
             </div>
             {{#each lans as |lan|}}
               <div class="row">
-                <label class="acc-label">Lan {{lan.id}} Gateway IPs</label><br/></a>
+                <label class="acc-label">Lan {{lan.id}} Gateway IPs</label><br/>
                 {{#each lan.gatewayIps as |gatewayIp index|}}
                   <div class="row">
                     {{input id=(concat "gatewayIp-" lan.id "-" index) value=(mut gatewayIp) placeholder="Gateway IP" classNames="form-control col span-11 autowidth" readonly=true}}
@@ -310,7 +310,7 @@
                 {{/each}}
               </div>
             {{/each}}
-            <p class="help-block">Lan ID is Required for custom NAT creation. Maps Lan IDs to a specific Gateway IP. Gateway IP can be blank and it will be automatically generated.</p>
+            <p class="help-block">Optional. Maps Lan IDs to a specific Gateway IP. Gateway IP must be set manually as default route.</p>
           </div>
         </div>
 
@@ -327,7 +327,7 @@
             {{input id="newPublicIp" value=(mut newPublicIp) placeholder="New Public IP" classNames="form-control mb-2 autowidth col"}}
             <button type="button" class="btn btn-outline-danger btn-sm col span-2" {{action "addPublicIp" newPublicIp}}>+</button>
           </div>
-          <p class="help-block">Required for custom NAT creation. Must be a reserved IPBlock IP for the chosen location.</p>
+          <p class="help-block">Optional. IPBlock reserved IPs. If not set, the driver will reserve an IPBlock automatically</p>
         </div>
       </div>
     {{/accordion-list-item}}
