@@ -207,7 +207,7 @@
         </div>
       </div>
       <div class="row"> {{!-- Datacenter config row--}}
-        <div class="col span-6">
+        <div class="col span-4">
           <label class="acc-label">IONOS Datacenter ID</label>
           {{input type="text"
                   value=config.datacenterId
@@ -215,7 +215,7 @@
           }}
           <p class="help-block">Optional, UUID-4 format. If you want to use an existing IONOS Datacenter to host this VM, you can provide its ID here.</p>
         </div>
-        <div class="col span-6">
+        <div class="col span-4">
           <label class="acc-label">IONOS Datacenter Name</label>
           {{input type="text"
                   value=config.datacenterName
@@ -226,14 +226,6 @@
       </div>
       <div class="row">  {{!-- LAN config row--}}
         <div class="col span-4">
-          <label class="acc-label">IONOS Lan Name</label>
-          {{input type="text"
-                  value=config.lanName
-                  classNames="form-control"
-          }}
-          <p class="help-block">String. If you want to use an existing IONOS LAN, you can change the name here. Please note that if the ID is set it will the prioritized.</p>
-        </div>
-        <div class="col span-4">
           <label class="acc-label">IONOS Lan ID</label>
           <!-- TODO: This, if has input, should make DatacenterID a required input -->
           {{input-integer
@@ -241,6 +233,14 @@
             classNames="form-control"
           }}
           <p class="help-block">Optional, integer. The LAN the VM will attach to. If blank, a default LAN will be created. Overrides "Private LAN" setting.</p>
+        </div>
+        <div class="col span-4">
+          <label class="acc-label">IONOS Lan Name</label>
+          {{input type="text"
+                  value=config.lanName
+                  classNames="form-control"
+          }}
+          <p class="help-block">String. If you want to use an existing IONOS LAN, you can change the name here. Please note that if the ID is set it will the prioritized.</p>
         </div>
         <div class="col span-4">
           <label class="acc-label">Private LAN</label>
@@ -269,7 +269,7 @@
         <div class="col span-4">
           <label class="acc-label">IONOS Nat Gateway Name</label>
           {{input type="text"
-                  value=config.natId
+                  value=config.natName
                   classNames="form-control"
           }}
           <p class="help-block">String. If the preconfigured NAT Gateway checkbox is checked, will try creating a NAT with this name, if it doesn't exist.</p>
