@@ -115,6 +115,8 @@ export default Ember.Component.extend(NodeDriver, {
       userData: '',
       token: '',
       username: '',
+      createNat: true,
+      privateLan: true,
       password: '',
       endpoint: 'https://api.ionos.com/cloudapi/v6',
       serverType: 'ENTERPRISE',

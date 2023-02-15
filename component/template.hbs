@@ -245,11 +245,9 @@
         <div class="col span-4">
           <label class="acc-label">Private LAN</label>
           <div class="form-check" style="">
-            <input type="checkbox"
-                   name="isPrivateLan"
-                   value=config.privateLan
-                   class="form-check-input"
-                   id="privateLanCheckbox">
+            {{input type="checkbox"
+                    checked=config.privateLan
+            }}
             <label class="form-check-label" for="privateLanCheckbox">
               Make Default LAN Private
             </label>
@@ -277,11 +275,9 @@
         <div class="col span-4">
           <label class="acc-label">Create a configurable NAT</label>
           <div class="form-check" style="">
-            <input type="checkbox"
-                    name="createNatCheckbox"
-                    value=config.createNat
-                    class="form-check-input"
-                    id="createNatCheckbox">
+            {{input type="checkbox"
+                    checked=config.createNat
+            }}
             <label class="form-check-label" for="createNatCheckbox">
               Create NAT
             </label>
