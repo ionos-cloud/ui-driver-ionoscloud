@@ -36,9 +36,74 @@ export default Ember.Component.extend(NodeDriver, {
     set(this,'layout', template);
 
     this._super(...arguments);
-
   },
   /*!!!!!!!!!!!DO NOT CHANGE END!!!!!!!!!!!*/
+
+  lans: [], // An array of objects: { "lan": "LAN_ID", "gatewayIps": [IP_1, IP_2] }, { ... }. { ... }. Unmarshalled to the string natLansToGateways which is sent to the driver.
+  actions: {
+    save() {
+      this.set('config.natPublicIps', this.config.natPublicIps);
+
+      // Sets `config.natLansToGateways` to a map of LANs to Gateways interpretable by Docker Machine Driver: like 1=10.0.0.1,10.0.0.2:2=10.0.0.10
+      this.config.natLansToGateways = this.lans.map(lan => `${lan.id}=${lan.gatewayIps.join(',')}`).join(':');
+      this.set('config.natLansToGateways', this.config.natLansToGateways)
+
+      this._super(...arguments);
+    },
+
+    // Builds this.lans from the natLansToGateways marshalled string
+    reverseNatLansToGatewaysMap() {
+      let marshalledString = this.get('config.natLansToGateways')
+      if (!marshalledString) {
+        marshalledString = ""
+      }
+      let lans = marshalledString ? marshalledString.split(':').map(entry => {
+        const [id, gatewayIps] = entry.split('=');
+        return {
+          id: parseInt(id),
+          gatewayIps: gatewayIps ? gatewayIps.split(',') : []
+        };
+      }) : [];
+      this.set('lans', lans)
+    },
+
+    addGatewayIp(lanId, gatewayIp) {
+      if (gatewayIp === undefined) {
+        gatewayIp = "";
+      }
+      let existingLan = this.lans.filter((lan) => {
+        return lan.id === lanId;
+      })[0];
+
+      if (existingLan === undefined) {
+        this.lans.pushObject({
+          id: lanId,
+          gatewayIps: [gatewayIp],
+        });
+      } else {
+        existingLan.gatewayIps.pushObject(gatewayIp);
+      }
+
+      this.send('updateNatLansToGatewaysMap');
+    },
+
+    deleteGatewayIp(lan, index) {
+      lan.gatewayIps.removeAt(index);
+      if (lan.gatewayIps.length === 0) {
+        this.lans.removeObject(lan);
+      }
+      this.send('updateNatLansToGatewaysMap');
+    },
+
+    addPublicIp(newPublicIp) {
+      this.config.natPublicIps.pushObject(newPublicIp)
+      this.set("newPublicIp", "");
+    },
+
+    deletePublicIp(index) {
+      this.config.natPublicIps.removeAt(index);
+    },
+  },
 
   // Write your component here, starting with setting 'model' to a machine with your config populated
   bootstrap: function() {
@@ -50,6 +115,8 @@ export default Ember.Component.extend(NodeDriver, {
       userData: '',
       token: '',
       username: '',
+      createNat: true,
+      privateLan: true,
       password: '',
       endpoint: 'https://api.ionos.com/cloudapi/v6',
       serverType: 'ENTERPRISE',
@@ -83,6 +150,13 @@ export default Ember.Component.extend(NodeDriver, {
       set(this, 'errors', null);
       return true;
     }
+  },
+
+  didInsertElement() {
+    this._super(...arguments);
+
+    // Load lans variable by unmarshalling saved natLansToGateways var
+    this.send('reverseNatLansToGatewaysMap');
   },
 
   // Any computed properties or custom logic can go here

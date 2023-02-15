@@ -166,7 +166,7 @@
           <label class="acc-label">Image Alias or ID</label>
           {{input type="text"
                   value=config.image
-                  placeholder="ubuntu:18.04"
+                  placeholder="ubuntu:20.04"
                   classNames="form-control"
           }}
           <p class="help-block">You can use <a href="https://docs.ionos.com/cli-ionosctl" target="_blank" rel="noopener noreferrer">ionosctl image list [-F name=operatingSystem]</a></p>
@@ -206,8 +206,8 @@
           <p class="help-block">Optional. User to connect to via SSH.</p>
         </div>
       </div>
-      <div class="row">
-        <div class="col span-3">
+      <div class="row"> {{!-- Datacenter config row--}}
+        <div class="col span-4">
           <label class="acc-label">IONOS Datacenter ID</label>
           {{input type="text"
                   value=config.datacenterId
@@ -215,7 +215,7 @@
           }}
           <p class="help-block">Optional, UUID-4 format. If you want to use an existing IONOS Datacenter to host this VM, you can provide its ID here.</p>
         </div>
-        <div class="col span-3">
+        <div class="col span-4">
           <label class="acc-label">IONOS Datacenter Name</label>
           {{input type="text"
                   value=config.datacenterName
@@ -223,15 +223,18 @@
           }}
           <p class="help-block">String. If you want to use an existing IONOS Datacenter to host this VM, you can change the name here. Please note that if the ID is set it will the prioritized.</p>
         </div>
-        <div class="col span-3">
+      </div>
+      <div class="row">  {{!-- LAN config row--}}
+        <div class="col span-4">
           <label class="acc-label">IONOS Lan ID</label>
+          <!-- TODO: This, if has input, should make DatacenterID a required input -->
           {{input-integer
             value=config.lanId
             classNames="form-control"
           }}
-          <p class="help-block">Optional, integer. You can provide one of the LANs on the given Datacenter.</p>
+          <p class="help-block">Optional, integer. The LAN the VM will attach to. If blank, a default LAN will be created. Overrides "Private LAN" setting.</p>
         </div>
-        <div class="col span-3">
+        <div class="col span-4">
           <label class="acc-label">IONOS Lan Name</label>
           {{input type="text"
                   value=config.lanName
@@ -239,25 +242,91 @@
           }}
           <p class="help-block">String. If you want to use an existing IONOS LAN, you can change the name here. Please note that if the ID is set it will the prioritized.</p>
         </div>
+        <div class="col span-4">
+          <label class="acc-label">Private LAN</label>
+          <div class="form-check" style="">
+            {{input type="checkbox"
+                    checked=config.privateLan
+            }}
+            <label class="form-check-label" for="privateLanCheckbox">
+              Make Default LAN Private
+            </label>
+          </div>
+          <p class="help-block">If the default LAN does not exist, create a private LAN</p>
+        </div>
       </div>
+      <div class="row"> {{!-- NAT config row--}}
+        <div class="col span-4">
+          <label class="acc-label">IONOS Nat Gateway ID</label>
+          {{input type="text"
+                  value=config.natId
+                  classNames="form-control"
+          }}
+          <p class="help-block">Optional, UUID-4 format. Use a preconfigured NAT Gateway. Datacenter ID and Private LAN required. Overrides NAT Config below</p>
+        </div>
+        <div class="col span-4">
+          <label class="acc-label">IONOS Nat Gateway Name</label>
+          {{input type="text"
+                  value=config.natName
+                  classNames="form-control"
+          }}
+          <p class="help-block">String. If the "Create NAT" checkbox is checked, will try creating a NAT with this name. If one already exists, will use the existing NAT.</p>
+        </div>
+        <div class="col span-4">
+          <label class="acc-label">Create a configurable NAT</label>
+          <div class="form-check" style="">
+            {{input type="checkbox"
+                    checked=config.createNat
+            }}
+            <label class="form-check-label" for="createNatCheckbox">
+              Create NAT
+            </label>
+          </div>
+          <p class="help-block">Requires private LAN. You can override settings of this NAT using the form below <a href="#" target="_blank" rel="noopener noreferrer">See open ports here</a>. Must set gateway IP as default route via cloud config, default: 10.0.0.1</p>
+        </div>
+      </div>
+      <!-- Custom NAT Gateway settings  -->
+      <div class="row">
+        <div class="col span-6 form-group">
+        <label class="acc-label">Custom NAT: map LANs to Gateway IPs</label>
+          <div class="row">
+            <div class="row">
+              {{input value=newLanId placeholder="Lan ID" classNames="form-control mb-2 col span-5 autowidth"}}
+              {{input value=gatewayIp placeholder="Gateway IP" classNames="form-control mb-2 col span-5 autowidth"}}
+              <button type="button" class="btn btn-primary btn-sm col span-2" {{action "addGatewayIp" newLanId gatewayIp}}>Add</button>
+            </div>
+            {{#each lans as |lan|}}
+              <div class="row">
+                <label class="acc-label">Lan {{lan.id}} Gateway IPs</label><br/>
+                {{#each lan.gatewayIps as |gatewayIp index|}}
+                  <div class="row">
+                    {{input id=(concat "gatewayIp-" lan.id "-" index) value=(mut gatewayIp) placeholder="Gateway IP" classNames="form-control col span-11 autowidth" readonly=true}}
+                    <button type="button" class="btn btn-outline-danger btn-sm col span-1" {{action "deleteGatewayIp" lan index}}>-</button>
+                  </div>
+                {{/each}}
+              </div>
+            {{/each}}
+            <p class="help-block">Optional. Maps Lan IDs to a specific Gateway IP. Gateway IP must be set manually as default route.</p>
+          </div>
+        </div>
 
+        <div class="col span-6 form-group">
+          <label class="acc-label">Custom NAT: Public IPs</label><br/>
+
+          {{#each config.natPublicIps as |publicIp index|}}
+          <div class="row">
+            {{input id=(concat "publicIp-" index) value=publicIp placeholder="Public IP" classNames="form-control mb-2 autowidth col" readonly=true}}
+            <button type="button" class="btn btn-outline-danger btn-sm col span-2" {{action "deletePublicIp" index}}>-</button>
+          </div>
+          {{/each}}
+          <div class="row">
+            {{input id="newPublicIp" value=(mut newPublicIp) placeholder="New Public IP" classNames="form-control mb-2 autowidth col"}}
+            <button type="button" class="btn btn-outline-danger btn-sm col span-2" {{action "addPublicIp" newPublicIp}}>+</button>
+          </div>
+          <p class="help-block">Optional. IPBlock reserved IPs. If not set, the driver will reserve an IPBlock automatically</p>
+        </div>
+      </div>
     {{/accordion-list-item}}
-
-      <!--    Uncomment lines here to add ACE editor for CloudINIT. TODO-->
-<!--      <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.13.1/ace.js" integrity="sha512-IQmiIneKUJhTJElpHOlsrb3jpF7r54AzhCTi7BTDLiBVg0f7mrEqWVCmOeoqKv5hDdyf3rbbxBUgYf4u3O/QcQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>-->
-<!--      <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.13.1/ext-language_tools.min.js" integrity="sha512-yszTJ9Ko+JGmUNZYpHStWpMg2rSXrh2WjSSZGydzpHY+qOS/3nSgA+hBHUK3RvLhfjycKL8XWEmfUCZod/mEqA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>-->
-<!--      <script>-->
-<!--        // ace.require("ace/ext/language_tools");-->
-<!--        const editor = ace.edit("editor");-->
-<!--        editor.setTheme("ace/theme/twilight");-->
-<!--        editor.session.setMode("ace/mode/c_cpp");-->
-<!--        editor.setOptions({-->
-<!--          enableBasicAutocompletion: true,-->
-<!--          enableSnippets: true,-->
-<!--          enableLiveAutocompletion: true-->
-<!--        });-->
-<!--        editor.resize();-->
-<!--      </script>-->
 
     {{!-- This following contains the Name, Labels and Engine Options fields --}}
     <div class="over-hr"><span>{{templateOptionsTitle}}</span></div>
