@@ -255,6 +255,35 @@
           <p class="help-block">If the default LAN does not exist, create a private LAN</p>
         </div>
       </div>
+      <div class="row">  {{!-- NIC config row--}}
+        <div class="col span-4">
+          <label class="acc-label">IONOS NIC DHCP</label>
+          <div class="form-check" style="">
+            {{input type="checkbox"
+                    checked=config.NicDhcp
+            }}
+            <label class="form-check-label" for="NicDhcpCheckbox">
+              NIC DHCP
+            </label>
+          </div>
+          <p class="help-block">Set whether the created NIC should have dhcp set on or off</p>
+        </div>
+        <div class="col span-6 form-group">
+          <label class="acc-label">NIC IPs</label><br/>
+
+          {{#each config.nicIps as |Ip index|}}
+          <div class="row">
+            {{input id=(concat "Ip-" index) value=Ip placeholder="IP" classNames="form-control mb-2 autowidth col" readonly=true}}
+            <button type="button" class="btn btn-outline-danger btn-sm col span-2" {{action "deleteNicIp" index}}>-</button>
+          </div>
+          {{/each}}
+          <div class="row">
+            {{input id="newIp" value=(mut newIp) placeholder="New IP" classNames="form-control mb-2 autowidth col"}}
+            <button type="button" class="btn btn-outline-danger btn-sm col span-2" {{action "addNicIp" newIp}}>+</button>
+          </div>
+          <p class="help-block">Optional. IPBlock reserved IPs. If not set, the driver will reserve an IPBlock automatically or let the API set a private IP if the LAN is private</p>
+        </div>
+      </div>
       <div class="row"> {{!-- NAT config row--}}
         <div class="col span-4">
           <label class="acc-label">IONOS Nat Gateway ID</label>

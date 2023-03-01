@@ -43,6 +43,7 @@ export default Ember.Component.extend(NodeDriver, {
   actions: {
     save() {
       this.set('config.natPublicIps', this.config.natPublicIps);
+      this.set('config.nicIps', this.config.nicIps);
 
       // Sets `config.natLansToGateways` to a map of LANs to Gateways interpretable by Docker Machine Driver: like 1=10.0.0.1,10.0.0.2:2=10.0.0.10
       this.config.natLansToGateways = this.lans.map(lan => `${lan.id}=${lan.gatewayIps.join(',')}`).join(':');
@@ -68,23 +69,22 @@ export default Ember.Component.extend(NodeDriver, {
     },
 
     addGatewayIp(lanId, gatewayIp) {
-      if (gatewayIp === undefined) {
-        gatewayIp = "";
+      if (ValidateIPaddress(gatewayIp)) {
+        let existingLan = this.lans.filter((lan) => {
+          return lan.id === lanId;
+        })[0];
+  
+        if (existingLan === undefined) {
+          this.lans.pushObject({
+            id: lanId,
+            gatewayIps: [gatewayIp],
+          });
+        } else {
+          existingLan.gatewayIps.pushObject(gatewayIp);
+        }
+  
+        this.send('updateNatLansToGatewaysMap');
       }
-      let existingLan = this.lans.filter((lan) => {
-        return lan.id === lanId;
-      })[0];
-
-      if (existingLan === undefined) {
-        this.lans.pushObject({
-          id: lanId,
-          gatewayIps: [gatewayIp],
-        });
-      } else {
-        existingLan.gatewayIps.pushObject(gatewayIp);
-      }
-
-      this.send('updateNatLansToGatewaysMap');
     },
 
     deleteGatewayIp(lan, index) {
@@ -96,12 +96,25 @@ export default Ember.Component.extend(NodeDriver, {
     },
 
     addPublicIp(newPublicIp) {
-      this.config.natPublicIps.pushObject(newPublicIp)
-      this.set("newPublicIp", "");
+      if (ValidateIPaddress(newPublicIp)) {
+        this.config.natPublicIps.pushObject(newPublicIp)
+        this.set("newPublicIp", "");
+      }
     },
 
     deletePublicIp(index) {
       this.config.natPublicIps.removeAt(index);
+    },
+
+    addNicIp(newIp) {
+      if (ValidateIPaddress(newIp)) {
+        this.config.nicIps.pushObject(newIp)
+        this.set("newIp", "");
+      }
+    },
+
+    deleteNicIp(index) {
+      this.config.nicIps.removeAt(index);
     },
   },
 
@@ -121,6 +134,7 @@ export default Ember.Component.extend(NodeDriver, {
       endpoint: 'https://api.ionos.com/cloudapi/v6',
       serverType: 'ENTERPRISE',
       natPublicIps: [],
+      nicIps: [],
     });
 
     set(this, 'model.%%DRIVERNAME%%Config', config);
@@ -291,3 +305,12 @@ export default Ember.Component.extend(NodeDriver, {
   ]
 });
 
+function ValidateIPaddress(ipaddress) 
+{
+if (/^(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$/.test(ipaddress))
+  {
+    return (true)
+  }
+alert("You have entered an invalid IP address!")
+return (false)
+}
