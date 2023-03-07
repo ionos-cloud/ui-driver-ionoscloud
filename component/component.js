@@ -69,7 +69,7 @@ export default Ember.Component.extend(NodeDriver, {
     },
 
     addGatewayIp(lanId, gatewayIp) {
-      if (ValidateIPaddress(gatewayIp)) {
+      if (validateIp(gatewayIp)) {
         let existingLan = this.lans.filter((lan) => {
           return lan.id === lanId;
         })[0];
@@ -96,7 +96,7 @@ export default Ember.Component.extend(NodeDriver, {
     },
 
     addPublicIp(newPublicIp) {
-      if (ValidateIPaddress(newPublicIp)) {
+      if (validateIp(newPublicIp)) {
         this.config.natPublicIps.pushObject(newPublicIp)
         this.set("newPublicIp", "");
       }
@@ -107,7 +107,7 @@ export default Ember.Component.extend(NodeDriver, {
     },
 
     addNicIp(newIp) {
-      if (ValidateIPaddress(newIp)) {
+      if (validateIp(newIp)) {
         this.config.nicIps.pushObject(newIp)
         this.set("newIp", "");
       }
@@ -305,12 +305,10 @@ export default Ember.Component.extend(NodeDriver, {
   ]
 });
 
-function ValidateIPaddress(ipaddress) 
-{
-if (/^(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$/.test(ipaddress))
-  {
-    return (true)
+function validateIp(ip) {
+  if (/^(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$/.test(ip)) {
+    return (true);
   }
-alert("You have entered an invalid IP address!")
-return (false)
+  alert("You have entered an invalid IP address!");
+  return (false);
 }
