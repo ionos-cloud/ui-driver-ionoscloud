@@ -134,6 +134,7 @@ export default Ember.Component.extend(NodeDriver, {
       endpoint: 'https://api.ionos.com/cloudapi/v6',
       serverType: 'ENTERPRISE',
       natPublicIps: [],
+      nicDhcp: false,
       nicIps: [],
     });
 
