@@ -197,13 +197,25 @@
                            expandOnInit=false
     }}
       <div class="row">
-        <div class="col span-12">
+        <div class="col span-4">
           <label class="acc-label">SSH User</label>
           {{input type="text"
                   value=config.sshUser
                   classNames="form-control"
           }}
           <p class="help-block">Optional. User to connect to via SSH.</p>
+        </div>
+        <div class="col span-4">
+          <label class="acc-label">Skip IONOS SSH.</label>
+          <div class="form-check" style="">
+            {{input type="checkbox"
+                    checked=config.skipIonosSsh
+            }}
+            <label class="form-check-label" for="skipIonosSshCheckbox">
+              Skip IONOS SSH.
+            </label>
+          </div>
+          <p class="help-block">Skip sending the ssh key when creating the ionos volume, it will be added in the user data instead.</p>
         </div>
       </div>
       <div class="row"> {{!-- Datacenter config row--}}
@@ -282,6 +294,28 @@
             <button type="button" class="btn btn-outline-danger btn-sm col span-2" {{action "addNicIp" newIp}}>+</button>
           </div>
           <p class="help-block">Optional. IPBlock reserved IPs. If not set, the driver will reserve an IPBlock automatically or let the API set a private IP if the LAN is private</p>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col span-4">
+          <label class="acc-label">Wait for NIC IP change</label>
+          <div class="form-check" style="">
+            {{input type="checkbox"
+                    checked=config.waitForIpChange
+            }}
+            <label class="form-check-label" for="waitForIpChangeCheckbox">
+              Wait for NIC IP change
+            </label>
+          </div>
+          <p class="help-block">Should the driver wait for the NIC IP to be set by external sources?</p>
+        </div>
+        <div class="col span-4">
+          <label class="acc-label">Wait for IP change timeout</label>
+          {{input-integer
+            value=config.waitForIpChangeTimeout
+            placeholder=600
+            classNames="form-control"
+          }}
         </div>
       </div>
       <div class="row"> {{!-- NAT config row--}}
