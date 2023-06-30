@@ -129,7 +129,7 @@ export default Ember.Component.extend(NodeDriver, {
       username: '',
       createNat: false,
       privateLan: false,
-      skipIonosSsh: false,
+      sshInUserData: false,
       waitForIpChange: false,
       waitForIpChangeTimeout: 600,
       password: '',

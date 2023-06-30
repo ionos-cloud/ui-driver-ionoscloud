@@ -206,16 +206,16 @@
           <p class="help-block">Optional. User to connect to via SSH.</p>
         </div>
         <div class="col span-4">
-          <label class="acc-label">Skip IONOS SSH.</label>
+          <label class="acc-label">Send SSH in user data.</label>
           <div class="form-check" style="">
             {{input type="checkbox"
-                    checked=config.skipIonosSsh
+                    checked=config.sshInUserData
             }}
-            <label class="form-check-label" for="skipIonosSshCheckbox">
-              Skip IONOS SSH.
+            <label class="form-check-label" for="sshInUserDataCheckbox">
+              Send SSH in user data.
             </label>
           </div>
-          <p class="help-block">Skip sending the ssh key when creating the ionos volume, it will be added in the user data instead.</p>
+          <p class="help-block">Should the driver only add the SSH info in the user data? (required for custom images).</p>
         </div>
       </div>
       <div class="row"> {{!-- Datacenter config row--}}
