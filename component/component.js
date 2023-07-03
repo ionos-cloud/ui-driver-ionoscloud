@@ -48,7 +48,6 @@ export default Ember.Component.extend(NodeDriver, {
       // Sets `config.natLansToGateways` to a map of LANs to Gateways interpretable by Docker Machine Driver: like 1=10.0.0.1,10.0.0.2:2=10.0.0.10
       this.config.natLansToGateways = this.lans.map(lan => `${lan.id}=${lan.gatewayIps.join(',')}`).join(':');
       this.set('config.natLansToGateways', this.config.natLansToGateways)
-
       this._super(...arguments);
     },
 
@@ -130,6 +129,9 @@ export default Ember.Component.extend(NodeDriver, {
       username: '',
       createNat: false,
       privateLan: false,
+      sshInUserData: false,
+      waitForIpChange: false,
+      waitForIpChangeTimeout: 600,
       password: '',
       endpoint: 'https://api.ionos.com/cloudapi/v6',
       serverType: 'ENTERPRISE',
