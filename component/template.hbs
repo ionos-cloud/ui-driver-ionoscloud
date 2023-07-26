@@ -184,7 +184,7 @@
       <div class="row">
         <div class="col span-12">
           <label class="acc-label">Cloud init configuration.</label>
-          <textarea id="editor" value={{config.userData}} onchange={{action (mut config.userData) value="target.value" }} rows="3" style="width: 100%; resize: vertical"></textarea>
+          <textarea id="editor" value={{config.CloudInit}} onchange={{action (mut config.CloudInit) value="target.value" }} rows="3" style="width: 100%; resize: vertical"></textarea>
           <p class="help-block">Optional. <a href="https://cloudinit.readthedocs.io/en/latest/topics/examples.html" target="_blank" rel="noopener noreferrer">Cloud-init Documentation</a>.</p>
         </div>
       </div>
@@ -209,9 +209,9 @@
           <label class="acc-label">Send SSH in user data.</label>
           <div class="form-check" style="">
             {{input type="checkbox"
-                    checked=config.sshInUserData
+                    checked=config.sshInCloudInit
             }}
-            <label class="form-check-label" for="sshInUserDataCheckbox">
+            <label class="form-check-label" for="sshInCloudInitCheckbox">
               Send SSH in user data.
             </label>
           </div>
