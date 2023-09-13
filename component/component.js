@@ -83,6 +83,8 @@ export default Ember.Component.extend(NodeDriver, {
         }
   
         this.send('updateNatLansToGatewaysMap');
+      } else {
+        alert("You have entered an invalid IP address!");
       }
     },
 
@@ -94,10 +96,73 @@ export default Ember.Component.extend(NodeDriver, {
       this.send('updateNatLansToGatewaysMap');
     },
 
+    addFlowlog(flowlogName, flowlogAction, flowlogDirection, flowlogBucket) {
+      if (!flowlogName) {
+        alert("Flowlog name should not be null!");
+        return
+      }
+      if (!flowlogBucket) {
+        alert("Flowlog bucket should not be null!");
+        return
+      }
+      let newFlowlog = [flowlogName, flowlogAction, flowlogDirection, flowlogBucket].join(':')
+      if (this.config.natFlowlogs.includes(newFlowlog)) {
+        alert("Flowlog already exists!");
+        return
+      }
+      this.config.natFlowlogs.pushObject(newFlowlog);
+    },
+
+    deleteFlowlog(index) {
+      this.config.natFlowlogs.removeAt(index);
+    },
+
+    addNatRule(natRuleName, natRuleType, natRuleProtocol, natRulePublicIp,
+      natRuleSourceSubnet, natRuleTargetSubnet, natRulePortStart, natRulePortEnd) {
+      if (!natRuleName) {
+        alert("NAT rule name should not be null!");
+        return
+      }
+      if (natRulePublicIp && !validateIp(natRulePublicIp)) {
+        alert("Invalid IP detected: " + natRulePublicIp );
+        return false;
+      }
+      if (!validateSubnet(natRuleSourceSubnet)) {
+        alert("Invalid Subnet detected: " + natRuleSourceSubnet );
+        return false;
+      }
+      if (natRuleTargetSubnet && !validateSubnet(natRuleTargetSubnet)) {
+        alert("Invalid Subnet detected: " + natRuleTargetSubnet );
+        return false;
+      }
+      if (natRulePortStart && Number.isNaN(parseInt(natRulePortStart))) {
+        alert("Invalid Port detected: " + natRulePortStart );
+        return;
+      }
+      if (natRulePortEnd && Number.isNaN(parseInt(natRulePortEnd))) {
+        alert("Invalid Port detected: " + natRulePortEnd );
+        return false;
+      }
+
+      let newRule = [natRuleName, natRuleType, natRuleProtocol, natRulePublicIp,
+        natRuleSourceSubnet, natRuleTargetSubnet, natRulePortStart, natRulePortEnd].join(':')
+      if (this.config.natRules.includes(newRule)) {
+        alert("Rule already exists!");
+        return
+      }
+      this.config.natRules.pushObject(newRule);
+    },
+
+    deleteNatRule(index) {
+      this.config.natRules.removeAt(index);
+    },
+
     addPublicIp(newPublicIp) {
       if (validateIp(newPublicIp)) {
         this.config.natPublicIps.pushObject(newPublicIp)
         this.set("newPublicIp", "");
+      } else {
+        alert("You have entered an invalid IP address!");
       }
     },
 
@@ -109,6 +174,8 @@ export default Ember.Component.extend(NodeDriver, {
       if (validateIp(newIp)) {
         this.config.nicIps.pushObject(newIp)
         this.set("newIp", "");
+      } else {
+        alert("You have entered an invalid IP address!");
       }
     },
 
@@ -135,9 +202,15 @@ export default Ember.Component.extend(NodeDriver, {
       password: '',
       endpoint: 'https://api.ionos.com/cloudapi/v6',
       serverType: 'ENTERPRISE',
+      flowlogAction: 'ALL',
+      flowlogDirection: 'BIDIRECTIONAL',
+      natRuleType: 'SNAT',
+      natRuleProtocol: 'ALL',
       natPublicIps: [],
       nicDhcp: false,
       nicIps: [],
+      natFlowlogs: [],
+      natRules: [],
     });
 
     set(this, 'model.%%DRIVERNAME%%Config', config);
@@ -305,6 +378,62 @@ export default Ember.Component.extend(NodeDriver, {
       name: 'SSD',
       value: 'SSD'
     },
+  ],
+
+  flowlogActionOptions: [
+    {
+      name: 'ALL',
+      value: 'ALL'
+    },
+    {
+      name: 'ACCEPTED',
+      value: 'ACCEPTED',
+    },
+    {
+      name: 'REJECTED',
+      value: 'REJECTED'
+    },
+  ],
+
+  flowlogDirectionOptions: [
+    {
+      name: 'BIDIRECTIONAL',
+      value: 'BIDIRECTIONAL',
+    },
+    {
+      name: 'INGRESS',
+      value: 'INGRESS',
+    },
+    {
+      name: 'EGRESS',
+      value: 'EGRESS'
+    },
+  ],
+
+  natRuleTypeOptions: [
+    {
+      name: 'SNAT',
+      value: 'SNAT',
+    },
+  ],
+
+  natRuleProtocolOptions: [
+    {
+      name: 'ALL',
+      value: 'ALL',
+    },
+    {
+      name: 'TCP',
+      value: 'TCP',
+    },
+    {
+      name: 'UDP',
+      value: 'UDP'
+    },
+    {
+      name: 'ICMP',
+      value: 'ICMP'
+    },
   ]
 });
 
@@ -312,6 +441,10 @@ function validateIp(ip) {
   if (/^(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$/.test(ip)) {
     return (true);
   }
-  alert("You have entered an invalid IP address!");
   return (false);
+}
+
+function validateSubnet(subnet) {
+  let splitSubnet = subnet.split('/')
+  return (splitSubnet.length == 2 && validateIp(splitSubnet[0]) && !(Number.isNaN(parseInt(splitSubnet[1]))))
 }
