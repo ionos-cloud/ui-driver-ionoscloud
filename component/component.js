@@ -128,19 +128,19 @@ export default Ember.Component.extend(NodeDriver, {
         return false;
       }
       if (!validateSubnet(natRuleSourceSubnet)) {
-        alert("Invalid Subnet detected: " + natRuleSourceSubnet );
+        alert("Invalid Source Subnet detected: " + natRuleSourceSubnet );
         return false;
       }
       if (natRuleTargetSubnet && !validateSubnet(natRuleTargetSubnet)) {
-        alert("Invalid Subnet detected: " + natRuleTargetSubnet );
+        alert("Invalid Target Subnet detected: " + natRuleTargetSubnet );
         return false;
       }
       if (natRulePortStart && Number.isNaN(parseInt(natRulePortStart))) {
-        alert("Invalid Port detected: " + natRulePortStart );
+        alert("Invalid Start Port detected: " + natRulePortStart );
         return;
       }
       if (natRulePortEnd && Number.isNaN(parseInt(natRulePortEnd))) {
-        alert("Invalid Port detected: " + natRulePortEnd );
+        alert("Invalid End Port detected: " + natRulePortEnd );
         return false;
       }
 
