@@ -127,7 +127,7 @@ export default Ember.Component.extend(NodeDriver, {
         alert("Invalid IP detected: " + natRulePublicIp );
         return false;
       }
-      if (!validateSubnet(natRuleSourceSubnet)) {
+      if (natRuleSourceSubnet && !validateSubnet(natRuleSourceSubnet)) {
         alert("Invalid Source Subnet detected: " + natRuleSourceSubnet );
         return false;
       }
@@ -233,8 +233,9 @@ export default Ember.Component.extend(NodeDriver, {
         'rule20:SNAT:TCP::::10250:10252',
         'rule21:SNAT:TCP::::30000:32767',
         'rule22:SNAT:UDP::::30000:32767',
-        'rule23:SNAT:ALL::::0:0',
+        'rule23:SNAT:ALL:::::',
       ],
+      skipDefaultNatRules: true,
     });
 
     set(this, 'model.%%DRIVERNAME%%Config', config);
