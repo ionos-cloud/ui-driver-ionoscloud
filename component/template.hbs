@@ -318,6 +318,15 @@
           }}
         </div>
       </div>
+    {{/accordion-list-item}}
+
+    {{#accordion-list-item title="NAT Options"
+                           detail="Set up your NAT here."
+                           expandAll=expandAll
+                           expand=(action expandFn)
+                           expandOnInit=false
+    }}
+
       <div class="row"> {{!-- NAT config row--}}
         <div class="col span-4">
           <label class="acc-label">IONOS Nat Gateway ID</label>
@@ -389,7 +398,124 @@
           <p class="help-block">Optional. IPBlock reserved IPs. If not set, the driver will reserve an IPBlock automatically</p>
         </div>
       </div>
+      <div class="row">
+        <div class="col span-8 form-group">
+        <label class="acc-label">Custom NAT: Flowlogs</label>
+          <div class="row">
+            <div class="row">
+              <div class="col span-4">
+                {{input value=flowlogName placeholder="Flowlog name" classNames="form-control"}}
+                <p class="help-block">String. The name of the NAT Flowlog.</p>
+              </div>
+              <div class="col span-4">
+                {{new-select class="form-control"
+                         content=flowlogActionOptions
+                         optionLabelPath='name'
+                         optionValuePath='value'
+                         value=config.flowlogAction
+                }}
+                <p class="help-block">String. The action of the NAT Flowlog.</p>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col span-4">
+                {{new-select class="form-control"
+                          content=flowlogDirectionOptions
+                          optionLabelPath='name'
+                          optionValuePath='value'
+                          value=config.flowlogDirection
+                }}
+                <p class="help-block">String. The direction of the NAT Flowlog.</p>
+              </div>
+              <div class="col span-4">
+                {{input value=flowlogBucket placeholder="Flowlog bucket" classNames="form-control"}}
+                <p class="help-block">String. The bucket of the NAT Flowlog.</p>
+              </div>
+              <button type="button" class="btn btn-primary btn-sm col span-2" {{action "addFlowlog" flowlogName config.flowlogAction config.flowlogDirection flowlogBucket}}>Add</button>
+            </div>
+            {{#each config.natFlowlogs as |flowlog index|}}
+              <div class="row">
+                <div class="col span-7">
+                  {{input id=flowlog value=flowlog placeholder="Flowlog" classNames="form-control" readonly=true}}
+                </div>
+                <div class="col span-1">
+                  <button type="button" class="btn btn-outline-danger btn-sm col span-1" {{action "deleteFlowlog" index}}>-</button>
+                </div>
+              </div>
+            {{/each}}
+            <p class="help-block">Optional. Nat Flowlogs.</p>
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col span-12 form-group">
+        <label class="acc-label">Custom NAT: Rules</label>
+          <div class="row">
+            <div class="row">
+              <div class="col span-3">
+                {{input value=natRuleName placeholder="Rule name" classNames="form-control"}}
+                <p class="help-block">String. The name of the new Nat Gateway Rule.</p>
+              </div>
+              <div class="col span-3">
+                {{new-select class="form-control"
+                         content=natRuleTypeOptions
+                         optionLabelPath='name'
+                         optionValuePath='value'
+                         value=config.natRuleType
+                }}
+                <p class="help-block">String. The type of the NAT Flowlog.</p>
+              </div>
+              <div class="col span-3">
+                {{new-select class="form-control"
+                         content=natRuleProtocolOptions
+                         optionLabelPath='name'
+                         optionValuePath='value'
+                         value=config.natRuleProtocol
+                }}
+                <p class="help-block">String. The protocol of the NAT Flowlog.</p>
+              </div>
+              <div class="col span-3">
+                {{input value=natRulePublicIp placeholder="NAT Rule Public IP" classNames="form-control"}}
+                <p class="help-block">String. The Public IP of the new Nat Gateway Rule, leave black and the driver will use the nat gateway IP.</p>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col span-3">
+                {{input value=natRuleSourceSubnet placeholder="NAT Rule Source Subnet" classNames="form-control"}}
+                <p class="help-block">String. The source subnet of the new Nat Gateway Rule.</p>
+              </div>
+              <div class="col span-3">
+                {{input value=natRuleTargetSubnet placeholder="NAT Rule Target Subnet" classNames="form-control"}}
+                <p class="help-block">String. The target subnet of the new Nat Gateway Rule.</p>
+              </div>
+              <div class="col span-3">
+                {{input value=natRulePortStart placeholder="NAT Rule Port Start" classNames="form-control"}}
+                <p class="help-block">String. The target port range start of the NAT Gateway rule.</p>
+              </div>
+              <div class="col span-3">
+                {{input value=natRulePortEnd placeholder="NAT Rule Port End" classNames="form-control"}}
+                <p class="help-block">String. The target port range end of the NAT Gateway rule.</p>
+              </div>
+            </div>
+            <div class="row">
+              <button type="button" class="btn btn-primary btn-sm col span-2" {{action "addNatRule" natRuleName config.natRuleType config.natRuleProtocol natRulePublicIp natRuleSourceSubnet natRuleTargetSubnet natRulePortStart natRulePortEnd}}>Add NAT Rule</button>
+            </div>
+            {{#each config.natRules as |rule index|}}
+              <div class="row">
+                <div class="col span-5">
+                  {{input id=rule value=rule placeholder="NAT Rule" classNames="form-control" readonly=true}}
+                </div>
+                <div class="col span-1">
+                  <button type="button" class="btn btn-outline-danger btn-sm col span-1" {{action "deleteNatRule" index}}>-</button>
+                </div>
+              </div>
+            {{/each}}
+            <p class="help-block">Optional. Nat Rules.</p>
+          </div>
+        </div>
+      </div>
     {{/accordion-list-item}}
+
 
     {{!-- This following contains the Name, Labels and Engine Options fields --}}
     <div class="over-hr"><span>{{templateOptionsTitle}}</span></div>
