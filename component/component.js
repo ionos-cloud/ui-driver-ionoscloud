@@ -185,8 +185,13 @@ export default Ember.Component.extend(NodeDriver, {
     },
 
     addAdditionalLan(newLan) {
-      this.config.additionalLans.pushObject(newLan)
-      this.set("newLan", "");
+      if (newLan) {
+        this.config.additionalLans.pushObject(newLan)
+        this.set("newLan", "");
+      } else {
+        alert("Please enter a LAN name!");
+      }
+
     },
 
     deleteAdditionalLan(index) {
