@@ -407,6 +407,14 @@ export default Ember.Component.extend(NodeDriver, {
       name: 'Intel XEON (USA)',
       value: 'INTEL_XEON',
     },
+    {
+      name: 'INTEL ICELAKE (Europe)',
+      value: 'INTEL_ICELAKE',
+    },
+    {
+      name: 'AMD EPYC',
+      value: 'AMD_EPYC',
+    },
   ],
 
   // Do you have a better option? Open a PR or an issue!
