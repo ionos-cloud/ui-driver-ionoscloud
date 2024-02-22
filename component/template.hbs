@@ -267,6 +267,23 @@
           <p class="help-block">If the default LAN does not exist, create a private LAN</p>
         </div>
       </div>
+      <div class="row">  {{!-- LAN config row--}}
+        <div class="col span-6 form-group">
+          <label class="acc-label">Additional LANs</label><br/>
+
+          {{#each config.additionalLans as |Lan index|}}
+          <div class="row">
+            {{input id=(concat "Lan-" index) value=Lan placeholder="Lan" classNames="form-control mb-2 autowidth col" readonly=true}}
+            <button type="button" class="btn btn-outline-danger btn-sm col span-2" {{action "deleteAdditionalLan" index}}>-</button>
+          </div>
+          {{/each}}
+          <div class="row">
+            {{input id="newLan" value=(mut newLan) placeholder="New Lan" classNames="form-control mb-2 autowidth col"}}
+            <button type="button" class="btn btn-outline-danger btn-sm col span-2" {{action "addAdditionalLan" newLan}}>+</button>
+          </div>
+          <p class="help-block">Optional. Existing Ionos LAN names. Every LAN in the datacenter which has its name in this list will be connected to the server, names which are not found will be ignored.</p>
+        </div>
+      </div>
       <div class="row">  {{!-- NIC config row--}}
         <div class="col span-4">
           <label class="acc-label">IONOS NIC DHCP</label>

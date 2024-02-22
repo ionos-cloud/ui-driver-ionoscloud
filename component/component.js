@@ -44,6 +44,7 @@ export default Ember.Component.extend(NodeDriver, {
     save() {
       this.set('config.natPublicIps', this.config.natPublicIps);
       this.set('config.nicIps', this.config.nicIps);
+      this.set('config.additionalLans', this.config.additionalLans);
 
       // Sets `config.natLansToGateways` to a map of LANs to Gateways interpretable by Docker Machine Driver: like 1=10.0.0.1,10.0.0.2:2=10.0.0.10
       this.config.natLansToGateways = this.lans.map(lan => `${lan.id}=${lan.gatewayIps.join(',')}`).join(':');
@@ -182,6 +183,20 @@ export default Ember.Component.extend(NodeDriver, {
     deleteNicIp(index) {
       this.config.nicIps.removeAt(index);
     },
+
+    addAdditionalLan(newLan) {
+      if (newLan) {
+        this.config.additionalLans.pushObject(newLan)
+        this.set("newLan", "");
+      } else {
+        alert("Please enter a LAN name!");
+      }
+
+    },
+
+    deleteAdditionalLan(index) {
+      this.config.additionalLans.removeAt(index);
+    },
   },
 
   // Write your component here, starting with setting 'model' to a machine with your config populated
@@ -208,6 +223,7 @@ export default Ember.Component.extend(NodeDriver, {
       natRuleProtocol: 'ALL',
       natPublicIps: [],
       nicDhcp: false,
+      additionalLans: [],
       nicIps: [],
       natFlowlogs: [],
       natRules: [
