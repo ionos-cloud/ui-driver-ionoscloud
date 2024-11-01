@@ -36,10 +36,31 @@ export default Ember.Component.extend(NodeDriver, {
     set(this,'layout', template);
 
     this._super(...arguments);
+    this.send('tryUpdateSelectOptions');
   },
   /*!!!!!!!!!!!DO NOT CHANGE END!!!!!!!!!!!*/
 
   lans: [], // An array of objects: { "lan": "LAN_ID", "gatewayIps": [IP_1, IP_2] }, { ... }. { ... }. Unmarshalled to the string natLansToGateways which is sent to the driver.
+  locationOptions: [
+    {
+      name: 'Las Vegas, USA',
+      value: 'us/las',
+    },
+  ],
+  cpuFamilyOptions: [
+    {
+      name: 'Intel SKYLAKE (Europe)',
+      value: 'INTEL_SKYLAKE',
+    },
+  ],
+  templateOptions: [
+    {
+      name: 'CUBES S',
+      value: 'CUBES S',
+    },
+
+  ],
+  retrievedOptions: false,
   actions: {
     save() {
       this.set('config.natPublicIps', this.config.natPublicIps);
@@ -50,6 +71,89 @@ export default Ember.Component.extend(NodeDriver, {
       this.config.natLansToGateways = this.lans.map(lan => `${lan.id}=${lan.gatewayIps.join(',')}`).join(':');
       this.set('config.natLansToGateways', this.config.natLansToGateways)
       this._super(...arguments);
+    },
+
+    updateToken(value) {
+      this.set('config.token', value);
+      this.send('tryUpdateSelectOptions');
+    },
+
+    updatePassword(value) {
+      this.set('config.password', value);
+      this.send('tryUpdateSelectOptions');
+    },
+
+    updateUsername(value) {
+      this.set('config.username', value);
+      this.send('tryUpdateSelectOptions');
+    },
+
+    tryUpdateSelectOptions() {
+      if (this.retrievedOptions) {
+        return
+      }
+
+      if (!(this.config.username && this.config.password || this.config.token)) {
+        return;
+      }
+      console.log('Updating location, cpuFamily and CUBE template select options...')
+      // let authConfig = {};
+      let authHeader
+      if (this.config.token) {
+        authHeader = "Bearer " + this.config.token
+      } else {
+        authHeader = "Basic " + window.btoa(this.config.username + ":" + this.config.password)
+      }
+
+      const locationRequest = new XMLHttpRequest();
+      locationRequest.open("GET", this.config.endpoint + "/locations?depth=1", false);
+      locationRequest.setRequestHeader("Authorization", authHeader)
+      locationRequest.send();
+      if (locationRequest.status === 200) {
+        let locationResponse = JSON.parse(locationRequest.response);
+        let locationSelectOptions = [];
+        let cpuFamilies = new Set();
+        let cpuFamilySelectOptions = [];
+        locationResponse.items.forEach((element) => {
+          locationSelectOptions.push({
+            name: element.properties.name,
+            value: element.id
+          });
+          if (element.properties.cpuArchitecture) {
+            element.properties.cpuArchitecture.forEach((element) => {
+              cpuFamilies.add(element.cpuFamily)
+            })
+          }
+        });
+        cpuFamilies.forEach((element) => cpuFamilySelectOptions.push({
+          name: element,
+          value: element
+        }))
+
+        this.set('locationOptions', locationSelectOptions.sort((a, b) => a.value.localeCompare(b.value)));
+        this.set('cpuFamilyOptions', cpuFamilySelectOptions.sort((a, b) => a.value.localeCompare(b.value)));
+      } else {
+        return
+      }
+
+      const templateRequest = new XMLHttpRequest();
+      templateRequest.open("GET", this.config.endpoint + "/templates?depth=1", false);
+      templateRequest.setRequestHeader("Authorization", authHeader)
+      templateRequest.send();
+      if (templateRequest.status === 200) {
+        let templateSelectOptions = [];
+        let templateResponse = JSON.parse(templateRequest.response);
+        templateResponse.items.forEach((element) => {
+          templateSelectOptions.push({
+            name: element.properties.name,
+            value: element.properties.name
+          });
+        });
+        this.set('templateOptions', templateSelectOptions.sort((a, b) => a.value.localeCompare(b.value)));
+      } else {
+        return
+      }
+      this.set('retrievedOptions', true)
     },
 
     // Builds this.lans from the natLansToGateways marshalled string
@@ -314,36 +418,36 @@ export default Ember.Component.extend(NodeDriver, {
 
   // TODO: Should restrict CPU locations based on the location chosen
   // TODO: Should be restricted by DatacenterID to the Datacenter's location, if set
-  locationOptions: [
-    {
-      name: 'Las Vegas, USA',
-      value: 'us/las',
-    },
-    {
-      name: 'Newark, USA',
-      value: 'us/ewr',
-    },
-    {
-      name: 'Frankfurt, Germany',
-      value: 'de/fra',
-    },
-    {
-      name: 'Berlin, Germany',
-      value: 'de/txl',
-    },
-    {
-      name: 'London, UK',
-      value: 'gb/lhr',
-    },
-    {
-      name: 'Logroño, Spain',
-      value: 'es/vit',
-    },
-    {
-      name: 'Paris, France',
-      value: 'fr/par',
-    },
-  ],
+  // locationOptions: [
+  //   {
+  //     name: 'Las Vegas, USA',
+  //     value: 'us/las',
+  //   },
+  //   {
+  //     name: 'Newark, USA',
+  //     value: 'us/ewr',
+  //   },
+  //   {
+  //     name: 'Frankfurt, Germany',
+  //     value: 'de/fra',
+  //   },
+  //   {
+  //     name: 'Berlin, Germany',
+  //     value: 'de/txl',
+  //   },
+  //   {
+  //     name: 'London, UK',
+  //     value: 'gb/lhr',
+  //   },
+  //   {
+  //     name: 'Logroño, Spain',
+  //     value: 'es/vit',
+  //   },
+  //   {
+  //     name: 'Paris, France',
+  //     value: 'fr/par',
+  //   },
+  // ],
 
   // Do you have a better option? Open a PR or an issue!
   // TODO: Should be restricted by LocationOptions.

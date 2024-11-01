@@ -12,29 +12,32 @@
       <div class="row">
         <div class="col span-6">
           <label class="acc-label">Username. Fallback to Token if not set.</label>
-          {{input type="text"
-                  class="form-control"
-                  value=config.username
-                  placeholder="Your IONOS username"
-          }}
+          <input type="text"
+            class="form-control"
+            value={{config.username}}
+            placeholder="Your IONOS username"
+            onchange={{ action "updateUsername" value="target.value" }}
+          >
         </div>
         <div class="col span-6">
           <label class="acc-label">Password. Fallback to Token if not set.</label>
-          {{input type="password"
-                  class="form-control"
-                  value=config.password
-                  placeholder="Your IONOS password"
-          }}
+          <input type="password"
+            class="form-control"
+            value={{ config.password }}
+            placeholder="Your IONOS password"
+            onchange={{ action "updatePassword" value="target.value" }}
+          >
         </div>
       </div>
       <div class="row">
         <div class="col span-12">
           <label class="acc-label">API Token (Overrides Username & Password)</label>
-          {{input type="password"
-              class="form-control"
-              value=config.token
-              placeholder="Your IONOS token"
-          }}
+          <input type="password"
+            class="form-control"
+            value={{config.token}}
+            placeholder="Your IONOS token"
+            onchange={{ action "updateToken" value="target.value" }}
+          >
           <p class="help-block">You can use <a href="https://docs.ionos.com/cli-ionosctl/subcommands/authentication/token-generate" target="_blank" rel="noopener noreferrer">ionosctl</a> to generate an API token.</p>
         </div>
       </div>
@@ -42,7 +45,7 @@
         <div class="col span-12">
           <label class="acc-label">API Endpoint</label>
           {{input type="text"
-              class="form-control"
+              classNames="form-control"
               value=config.endpoint
               placeholder="https://api.ionos.com/cloudapi/v6"
           }}
@@ -67,6 +70,7 @@
                          value=config.location
             }}
         </div>
+        <button type="button" class="btn btn-outline-danger btn-sm col span-2" {{action "tryUpdateSelectOptions"}}>AICI</button>
         <div class="col span-3">
           <label class="acc-label">Server Type</label>
             {{new-select class="form-control"
@@ -80,7 +84,7 @@
         <div class="col span-3">
           <label class="acc-label">CUBE Server Template</label>
           {{new-select class="form-control"
-                       content=cubeServerTemplateOptions
+                       content=templateOptions
                        optionLabelPath='name'
                        optionValuePath='value'
                        value=config.template
@@ -113,7 +117,7 @@
         <div class="col span-3">
           <label class="acc-label">CPU Family</label>
             {{new-select class="form-control"
-                         content=cpuOptions
+                         content=cpuFamilyOptions
                          optionLabelPath='name'
                          optionValuePath='value'
                          value=config.cpuFamily
