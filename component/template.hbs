@@ -44,11 +44,12 @@
       <div class="row">
         <div class="col span-12">
           <label class="acc-label">API Endpoint</label>
-          {{input type="text"
+          <input type="text"
               classNames="form-control"
-              value=config.endpoint
+              value={{config.endpoint}}
               placeholder="https://api.ionos.com/cloudapi/v6"
-          }}
+              onchange={{ action "updateEndpoint" value="target.value" }}
+          >
           <p class="help-block">Optional</p>
         </div>
       </div>
@@ -70,7 +71,6 @@
                          value=config.location
             }}
         </div>
-        <button type="button" class="btn btn-outline-danger btn-sm col span-2" {{action "tryUpdateSelectOptions"}}>AICI</button>
         <div class="col span-3">
           <label class="acc-label">Server Type</label>
             {{new-select class="form-control"
@@ -94,7 +94,7 @@
         <div class="col span-3">
           <label class="acc-label">Server Zone</label>
           {{new-select class="form-control"
-                       content=zoneOptions
+                       content=serverZoneOptions
                        optionLabelPath='name'
                        optionValuePath='value'
                        value=config.serverZone
@@ -103,7 +103,7 @@
         <div class="col span-3">
           <label class="acc-label">Volume Zone</label>
           {{new-select class="form-control"
-                       content=zoneOptions
+                       content=volumeZoneOptions
                        optionLabelPath='name'
                        optionValuePath='value'
                        value=config.volumeZone

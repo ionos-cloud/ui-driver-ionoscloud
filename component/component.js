@@ -41,24 +41,107 @@ export default Ember.Component.extend(NodeDriver, {
   /*!!!!!!!!!!!DO NOT CHANGE END!!!!!!!!!!!*/
 
   lans: [], // An array of objects: { "lan": "LAN_ID", "gatewayIps": [IP_1, IP_2] }, { ... }. { ... }. Unmarshalled to the string natLansToGateways which is sent to the driver.
+  // TODO: Should restrict CPU locations based on the location chosen
+  // TODO: Should be restricted by DatacenterID to the Datacenter's location, if set
   locationOptions: [
     {
-      name: 'Las Vegas, USA',
-      value: 'us/las',
+      name: 'frankfurt',
+      value: 'de/fra'
+    },
+    {
+      name: 'berlin',
+      value: 'de/txl'
+    },
+    {
+      name: 'logrono',
+      value: 'es/vit'
+    },
+    {
+      name: 'paris',
+      value: 'fr/par'
+    },
+    {
+      name: 'worcester',
+      value: 'gb/bhx'
+    },
+    {
+      name: 'london',
+      value: 'gb/lhr'
+    },
+    {
+      name: 'newark',
+      value: 'us/ewr'
+    },
+    {
+      name: 'lasvegas',
+      value: 'us/las'
+    },
+    {
+      name: 'lenexa',
+      value: 'us/mci'
     },
   ],
+  // Do you have a better option? Open a PR or an issue!
+  // TODO: Should be restricted by LocationOptions.
   cpuFamilyOptions: [
     {
-      name: 'Intel SKYLAKE (Europe)',
-      value: 'INTEL_SKYLAKE',
+      name: 'INTEL_XEON',
+      value: 'INTEL_XEON'
+    },
+    {
+      name: 'INTEL_SKYLAKE',
+      value: 'INTEL_SKYLAKE'
+    },
+    {
+      name: 'INTEL_ICELAKE',
+      value: 'INTEL_ICELAKE'
+    },
+    {
+      name: 'AMD_EPYC',
+      value: 'AMD_EPYC'
     },
   ],
   templateOptions: [
     {
-      name: 'CUBES S',
-      value: 'CUBES S',
+      name: 'Basic Cube L',
+      value: 'Basic Cube L'
     },
-
+    {
+      name: 'Basic Cube M',
+      value: 'Basic Cube M'
+    },
+    {
+      name: 'Basic Cube S',
+      value: 'Basic Cube S'
+    },
+    {
+      name: 'Basic Cube XL',
+      value: 'Basic Cube XL'
+    },
+    {
+      name: 'Basic Cube XS',
+      value: 'Basic Cube XS'
+    },
+    {
+      name: 'Memory Cube L',
+      value: 'Memory Cube L'
+    },
+    {
+      name: 'Memory Cube L',
+      value: 'Memory Cube L'
+    },
+    {
+      name: 'Memory Cube M',
+      value: 'Memory Cube M'
+    },
+    {
+      name: 'Memory Cube S',
+      value: 'Memory Cube S'
+    },
+    {
+      name: 'Memory Cube XL',
+      value: 'Memory Cube XL'
+    },
   ],
   retrievedOptions: false,
   actions: {
@@ -88,7 +171,22 @@ export default Ember.Component.extend(NodeDriver, {
       this.send('tryUpdateSelectOptions');
     },
 
+    updateEndpoint(value) {
+      this.set('config.endpoint', value);
+      this.set('retrievedOptions', false);
+      this.send('tryUpdateSelectOptions');
+    },
+
     tryUpdateSelectOptions() {
+      function inArray(target, array) {
+        for(var i = 0; i < array.length; i++) {
+          if(array[i].value === target) {
+            return true;
+          }
+        }
+        return false; 
+      }
+
       if (this.retrievedOptions) {
         return
       }
@@ -96,8 +194,6 @@ export default Ember.Component.extend(NodeDriver, {
       if (!(this.config.username && this.config.password || this.config.token)) {
         return;
       }
-      console.log('Updating location, cpuFamily and CUBE template select options...')
-      // let authConfig = {};
       let authHeader
       if (this.config.token) {
         authHeader = "Bearer " + this.config.token
@@ -108,50 +204,81 @@ export default Ember.Component.extend(NodeDriver, {
       const locationRequest = new XMLHttpRequest();
       locationRequest.open("GET", this.config.endpoint + "/locations?depth=1", false);
       locationRequest.setRequestHeader("Authorization", authHeader)
-      locationRequest.send();
-      if (locationRequest.status === 200) {
-        let locationResponse = JSON.parse(locationRequest.response);
-        let locationSelectOptions = [];
-        let cpuFamilies = new Set();
-        let cpuFamilySelectOptions = [];
-        locationResponse.items.forEach((element) => {
-          locationSelectOptions.push({
-            name: element.properties.name,
-            value: element.id
+      try {
+        locationRequest.send();
+        if (locationRequest.status === 200) {
+          let locationResponse = JSON.parse(locationRequest.response);
+          let locationSelectOptions = [];
+          let cpuFamilies = new Set();
+          let cpuFamilySelectOptions = [];
+          locationResponse.items.forEach((element) => {
+            locationSelectOptions.push({
+              name: element.properties.name,
+              value: element.id
+            });
+            if (element.properties.cpuArchitecture) {
+              element.properties.cpuArchitecture.forEach((element) => {
+                cpuFamilies.add(element.cpuFamily)
+              })
+            }
           });
-          if (element.properties.cpuArchitecture) {
-            element.properties.cpuArchitecture.forEach((element) => {
-              cpuFamilies.add(element.cpuFamily)
+          cpuFamilies.forEach((element) => cpuFamilySelectOptions.push({
+            name: element,
+            value: element
+          }))
+
+          if (this.config.location && !inArray(this.config.location, locationSelectOptions)) {
+            locationSelectOptions.push({
+              name: this.config.location,
+              value: this.config.location
             })
           }
-        });
-        cpuFamilies.forEach((element) => cpuFamilySelectOptions.push({
-          name: element,
-          value: element
-        }))
 
-        this.set('locationOptions', locationSelectOptions.sort((a, b) => a.value.localeCompare(b.value)));
-        this.set('cpuFamilyOptions', cpuFamilySelectOptions.sort((a, b) => a.value.localeCompare(b.value)));
-      } else {
-        return
+          if (this.config.cpuFamily && !inArray(this.config.location, cpuFamilySelectOptions)) {
+            cpuFamilySelectOptions.push({
+              name: this.config.cpuFamily,
+              value: this.config.cpuFamily
+            })
+          }
+
+          this.set('locationOptions', locationSelectOptions.sort((a, b) => a.value.localeCompare(b.value)));
+          this.set('cpuFamilyOptions', cpuFamilySelectOptions.sort((a, b) => a.value.localeCompare(b.value)));
+        } else {
+          return
+        }
+      } catch (e) {
+        console.error(e); // eslint-disable-line no-console
       }
 
       const templateRequest = new XMLHttpRequest();
       templateRequest.open("GET", this.config.endpoint + "/templates?depth=1", false);
       templateRequest.setRequestHeader("Authorization", authHeader)
-      templateRequest.send();
-      if (templateRequest.status === 200) {
-        let templateSelectOptions = [];
-        let templateResponse = JSON.parse(templateRequest.response);
-        templateResponse.items.forEach((element) => {
-          templateSelectOptions.push({
-            name: element.properties.name,
-            value: element.properties.name
+      try {
+        templateRequest.send();
+        if (templateRequest.status === 200) {
+          let templateSelectOptions = [];
+          let templateResponse = JSON.parse(templateRequest.response);
+          templateResponse.items.forEach((element) => {
+            templateSelectOptions.push({
+              name: element.properties.name,
+              value: element.properties.name
+            });
           });
-        });
-        this.set('templateOptions', templateSelectOptions.sort((a, b) => a.value.localeCompare(b.value)));
-      } else {
-        return
+
+
+          if (this.config.template && !inArray(this.config.location, templateSelectOptions)) {
+            templateSelectOptions.push({
+              name: this.config.template,
+              value: this.config.template
+            })
+          }
+
+          this.set('templateOptions', templateSelectOptions.sort((a, b) => a.value.localeCompare(b.value)));
+        } else {
+          return
+        }
+      } catch (e) {
+        console.error(e); // eslint-disable-line no-console
       }
       this.set('retrievedOptions', true)
     },
@@ -397,7 +524,7 @@ export default Ember.Component.extend(NodeDriver, {
 
   // Any computed properties or custom logic can go here
   // duplicated dict k/v pairs in favor of cleaner hbs template - be my guest if you want to change this
-  zoneOptions: [
+  volumeZoneOptions: [
     {
       name: 'AUTO',
       value: 'AUTO',
@@ -416,41 +543,20 @@ export default Ember.Component.extend(NodeDriver, {
     },
   ],
 
-  // TODO: Should restrict CPU locations based on the location chosen
-  // TODO: Should be restricted by DatacenterID to the Datacenter's location, if set
-  // locationOptions: [
-  //   {
-  //     name: 'Las Vegas, USA',
-  //     value: 'us/las',
-  //   },
-  //   {
-  //     name: 'Newark, USA',
-  //     value: 'us/ewr',
-  //   },
-  //   {
-  //     name: 'Frankfurt, Germany',
-  //     value: 'de/fra',
-  //   },
-  //   {
-  //     name: 'Berlin, Germany',
-  //     value: 'de/txl',
-  //   },
-  //   {
-  //     name: 'London, UK',
-  //     value: 'gb/lhr',
-  //   },
-  //   {
-  //     name: 'Logroño, Spain',
-  //     value: 'es/vit',
-  //   },
-  //   {
-  //     name: 'Paris, France',
-  //     value: 'fr/par',
-  //   },
-  // ],
-
-  // Do you have a better option? Open a PR or an issue!
-  // TODO: Should be restricted by LocationOptions.
+  serverZoneOptions: [
+    {
+      name: 'AUTO',
+      value: 'AUTO',
+    },
+    {
+      name: 'ZONE_1',
+      value: 'ZONE_1',
+    },
+    {
+      name: 'ZONE_2',
+      value: 'ZONE_2',
+    },
+  ],
 
   serverTypeOptions: [
     {
@@ -463,65 +569,6 @@ export default Ember.Component.extend(NodeDriver, {
     },
   ],
 
-  cubeServerTemplateOptions: [
-    {
-      name: 'XS',
-      value: 'CUBES XS',
-    },
-    {
-      name: 'S',
-      value: 'CUBES S',
-    },
-    {
-      name: 'M',
-      value: 'CUBES M',
-    },
-    {
-      name: 'L',
-      value: 'CUBES L',
-    },
-    {
-      name: 'XL',
-      value: 'CUBES XL',
-    },
-    {
-      name: 'XXL',
-      value: 'CUBES XXL',
-    },
-    {
-      name: '3XL',
-      value: 'CUBES 3XL',
-    },
-    {
-      name: '4XL',
-      value: 'CUBES 4XL',
-    },
-  ],
-
-  cpuOptions: [
-    {
-      name: 'Intel SKYLAKE (Europe)',
-      value: 'INTEL_SKYLAKE',
-    },
-    {
-      name: 'AMD OPTERON (USA)',
-      value: 'AMD_OPTERON',
-    },
-    {
-      name: 'Intel XEON (USA)',
-      value: 'INTEL_XEON',
-    },
-    {
-      name: 'INTEL ICELAKE (Europe)',
-      value: 'INTEL_ICELAKE',
-    },
-    {
-      name: 'AMD EPYC',
-      value: 'AMD_EPYC',
-    },
-  ],
-
-  // Do you have a better option? Open a PR or an issue!
   storageTypeOptions: [
     {
       name: 'HDD',
