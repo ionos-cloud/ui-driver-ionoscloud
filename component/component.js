@@ -572,11 +572,27 @@ export default Ember.Component.extend(NodeDriver, {
   storageTypeOptions: [
     {
       name: 'HDD',
-      value: 'HDD',
+      value: 'HDD'
     },
     {
       name: 'SSD',
       value: 'SSD'
+    },
+    {
+      name: 'SSD Standard',
+      value: 'SSD Standard'
+    },
+    {
+      name: 'SSD Premium',
+      value: 'SSD Premium'
+    },
+    {
+      name: 'DAS',
+      value: 'DAS'
+    },
+    {
+      name: 'ISO',
+      value: 'ISO'
     },
   ],
 
